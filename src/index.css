@@ -90,3 +90,23 @@ body {
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+
+/* Shared horizontal page gutters — roomy on phone/tablet, respects notch safe areas */
+.page-pad-x {
+  padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+}
+
+@media (min-width: 640px) {
+  .page-pad-x {
+    padding-left: max(2.5rem, env(safe-area-inset-left, 0px));
+    padding-right: max(2.5rem, env(safe-area-inset-right, 0px));
+  }
+}
+
+@media (min-width: 768px) {
+  .page-pad-x {
+    padding-left: max(3rem, env(safe-area-inset-left, 0px));
+    padding-right: max(3rem, env(safe-area-inset-right, 0px));
+  }
+}

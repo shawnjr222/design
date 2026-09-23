@@ -69,6 +69,30 @@ function studioOf(session: MomenceSession, location: string): Studio {
   return 'Folk SF'
 }
 
+/** Calendar day in LA — used so tomorrow’s visit is always a fresh 30-day pull. */
+export function scheduleDayKey(date = new Date()) {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date)
+}
+
+/**
+ * Rolling window from the moment the visitor loads the site through
+ * `days` later. Recomputed on every fetch so tomorrow ≠ today’s window.
+ */
+export function scheduleWindow(days: number, from = new Date()) {
+  const now = from
+  const horizon = new Date(now.getTime() + days * 24 * 60 * 60 * 1000)
+  return { now, horizon }
+}
+
+function toMomenceIso(date: Date) {
+  return date.toISOString().replace(/\.\d{3}Z$/, '.000Z')
+}
+
 export function formatLocationLabel(studio: Studio, location: string) {
   if (!location) return studio
   return `${studio} · ${location}`
@@ -90,19 +114,19 @@ export function formatClassTimeRange(start: Date, end: Date) {
 }
 
 async function fetchFolkClasses(days: number): Promise<YogaClass[]> {
-  const now = new Date()
-  const horizon = new Date(now.getTime() + days * 24 * 60 * 60 * 1000)
+  const { now, horizon } = scheduleWindow(days)
 
   const params = new URLSearchParams()
   for (const type of SESSION_TYPES) params.append('sessionTypes[]', type)
-  params.set('fromDate', now.toISOString().replace(/\.\d{3}Z$/, '.000Z'))
+  params.set('fromDate', toMomenceIso(now))
+  params.set('toDate', toMomenceIso(horizon))
   params.set('pageSize', '100')
   params.set('page', '0')
   params.set('timeZone', TZ)
   params.append('teacherIds[]', String(TEACHER_ID))
 
   const url = `https://readonly-api.momence.com/host-plugins/host/${FOLK_HOST_ID}/host-schedule/sessions?${params}`
-  const res = await fetch(url)
+  const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) throw new Error(`Folk schedule fetch failed (${res.status})`)
 
   const data = (await res.json()) as { payload?: MomenceSession[] }
@@ -140,8 +164,7 @@ async function fetchFolkClasses(days: number): Promise<YogaClass[]> {
 }
 
 async function fetchAriseClasses(days: number): Promise<YogaClass[]> {
-  const now = new Date()
-  const horizon = new Date(now.getTime() + days * 24 * 60 * 60 * 1000)
+  const { now, horizon } = scheduleWindow(days)
 
   try {
     const res = await fetch('/data/arise-schedule.json', { cache: 'no-store' })
@@ -181,13 +204,17 @@ export async function fetchUpcomingClasses(days = 30): Promise<YogaClass[]> {
   return classes
 }
 
-/** Session-warmed schedule so the intro can finish with yoga data ready. */
+/** Day-keyed warm so each calendar day is a fresh rolling 30-day pull. */
+let warmDay: string | null = null
 let warmPromise: Promise<YogaClass[]> | null = null
 
 export function warmUpcomingClasses(days = 30): Promise<YogaClass[]> {
-  if (!warmPromise) {
+  const day = scheduleDayKey()
+  if (!warmPromise || warmDay !== day) {
+    warmDay = day
     warmPromise = fetchUpcomingClasses(days).catch((err) => {
       warmPromise = null
+      warmDay = null
       throw err
     })
   }

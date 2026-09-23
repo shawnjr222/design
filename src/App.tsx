@@ -256,7 +256,7 @@ function App() {
 
       <div className="relative z-10 min-h-screen text-[var(--ink)]">
         <motion.header
-          className="fixed top-0 left-0 right-0 z-50 px-5 sm:px-8 md:px-10 pt-[env(safe-area-inset-top)]"
+          className="fixed top-0 left-0 right-0 z-50 page-pad-x pt-[env(safe-area-inset-top)]"
           initial={false}
           animate={{
             y: headerVisible ? 0 : -100,

@@ -43,7 +43,7 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
 
   return (
     <>
-      <section className="relative min-h-[100svh] flex flex-col justify-center px-5 sm:px-8 md:px-10 pt-28 sm:pt-24 pb-12">
+      <section className="relative min-h-[100svh] flex flex-col justify-center page-pad-x pt-28 sm:pt-24 pb-12">
         <div className="mx-auto w-full max-w-[1120px]">
           <motion.p
             initial={{ opacity: 0, y: 36 }}
@@ -86,7 +86,7 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
 
       <section
         id="about"
-        className="relative min-h-[100svh] flex flex-col justify-start px-5 sm:px-8 md:px-10 pt-10 sm:pt-14"
+        className="relative min-h-[100svh] flex flex-col justify-start page-pad-x pt-10 sm:pt-14 pb-8 sm:pb-10"
       >
         <div className="mx-auto max-w-[1120px] flex flex-col items-center text-center">
           <motion.div
@@ -111,7 +111,7 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
             whileInView="visible"
             custom={0.04}
             viewport={{ once: true, amount: 0.2 }}
-            className="mt-3 sm:mt-3.5 mb-3 max-w-[28rem] px-1 text-[clamp(1.25rem,4.5vw,1.95rem)] font-medium leading-[1.2] tracking-[-0.03em]"
+            className="mt-5 sm:mt-6 mb-4 max-w-[28rem] text-[clamp(1.25rem,4.5vw,1.95rem)] font-medium leading-[1.2] tracking-[-0.03em]"
           >
             {aboutTitle}
           </motion.p>
@@ -122,14 +122,14 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
             whileInView="visible"
             custom={0.08}
             viewport={{ once: true, amount: 0.2 }}
-            className="max-w-[36rem] px-1 text-[15px] sm:text-[16px] leading-[1.6] text-[var(--ink-soft)]"
+            className="max-w-[36rem] text-[15px] sm:text-[16px] leading-[1.6] text-[var(--ink-soft)]"
           >
             {aboutBio}
           </motion.p>
         </div>
       </section>
 
-      <section id="work" className="px-5 sm:px-8 md:px-10 pt-16 sm:pt-20 md:pt-28 pb-16 sm:pb-20 md:pb-28">
+      <section id="work" className="page-pad-x pt-16 sm:pt-20 md:pt-28 pb-16 sm:pb-20 md:pb-28">
         <div className="mx-auto max-w-[1120px]">
           <motion.p
             variants={fadeUp}
@@ -137,7 +137,7 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
             whileInView="visible"
             custom={0}
             viewport={{ once: true, amount: 0.2 }}
-            className="mb-8 sm:mb-10 text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[var(--muted)]"
+            className="mb-8 sm:mb-10 md:mb-12 text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[var(--muted)]"
           >
             Work experience
           </motion.p>
@@ -169,7 +169,7 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.15 }}
-                    className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(220px,42%)] gap-5 md:gap-8 lg:gap-10 items-center py-8 sm:py-10 md:py-12 lg:py-14"
+                    className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(220px,42%)] gap-6 sm:gap-7 md:gap-8 lg:gap-10 items-center py-9 sm:py-11 md:py-12 lg:py-14"
                   >
                     <div className="min-w-0 order-2 md:order-1">
                       <h2 className="mb-2 text-[clamp(1.25rem,3.5vw,1.85rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-[var(--ink)]">
@@ -203,8 +203,8 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
         </div>
       </section>
 
-      <footer className="px-5 sm:px-8 md:px-10 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
-        <div className="mx-auto max-w-[1120px] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-[var(--line)] pt-8">
+      <footer className="page-pad-x pb-[max(2.5rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-[1120px] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-[var(--line)] pt-8 sm:pt-10">
           <p className="text-[13px] text-[var(--muted)]">© 2026 Shawn Jr</p>
           <a
             href="https://www.linkedin.com/in/shawnjr/"

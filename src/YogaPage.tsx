@@ -37,7 +37,8 @@ export function YogaPage({ ready }: Props) {
 
   useEffect(() => {
     let cancelled = false
-    ;(async () => {
+
+    const load = async () => {
       try {
         const next = await warmUpcomingClasses(30)
         if (!cancelled) {
@@ -47,15 +48,26 @@ export function YogaPage({ ready }: Props) {
       } catch {
         if (!cancelled) setStatus('error')
       }
-    })()
+    }
+
+    void load()
+
+    // If the tab sits overnight, refresh for the new calendar day's 30-day window.
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return
+      void load()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+
     return () => {
       cancelled = true
+      document.removeEventListener('visibilitychange', onVisible)
     }
   }, [])
 
   return (
     <>
-      <section className="relative min-h-[100svh] flex flex-col justify-center px-5 sm:px-8 md:px-10 pt-28 sm:pt-24 pb-12">
+      <section className="relative min-h-[100svh] flex flex-col justify-center page-pad-x pt-28 sm:pt-24 pb-12">
         <div className="mx-auto w-full max-w-[1120px]">
           <motion.p
             initial={{ opacity: 0, y: 36 }}
@@ -107,7 +119,7 @@ export function YogaPage({ ready }: Props) {
 
       <section
         id="about"
-        className="relative min-h-[100svh] flex flex-col justify-start px-5 sm:px-8 md:px-10 pt-10 sm:pt-14"
+        className="relative min-h-[100svh] flex flex-col justify-start page-pad-x pt-10 sm:pt-14 pb-8 sm:pb-10"
       >
         <div className="mx-auto max-w-[1120px] flex flex-col items-center text-center">
           <motion.div
@@ -134,7 +146,7 @@ export function YogaPage({ ready }: Props) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7, ease }}
-            className="mt-3 sm:mt-3.5 mb-3 max-w-[28rem] px-1 text-[clamp(1.25rem,4.5vw,1.95rem)] font-medium leading-[1.2] tracking-[-0.03em]"
+            className="mt-5 sm:mt-6 mb-4 max-w-[28rem] text-[clamp(1.25rem,4.5vw,1.95rem)] font-medium leading-[1.2] tracking-[-0.03em]"
           >
             {yogaContent.about.title}
           </motion.p>
@@ -144,21 +156,21 @@ export function YogaPage({ ready }: Props) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7, ease }}
-            className="max-w-[36rem] px-1 text-[15px] sm:text-[16px] leading-[1.6] text-[var(--ink-soft)]"
+            className="max-w-[36rem] text-[15px] sm:text-[16px] leading-[1.6] text-[var(--ink-soft)]"
           >
             {yogaContent.about.bio}
           </motion.p>
         </div>
       </section>
 
-      <section id="schedule" className="px-5 sm:px-8 md:px-10 pt-16 sm:pt-20 md:pt-28 pb-16 sm:pb-20 md:pb-28">
+      <section id="schedule" className="page-pad-x pt-16 sm:pt-20 md:pt-28 pb-16 sm:pb-20 md:pb-28">
         <div className="mx-auto max-w-[1120px]">
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7, ease }}
-            className="mb-8 sm:mb-10 text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[var(--muted)]"
+            className="mb-8 sm:mb-10 md:mb-12 text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[var(--muted)]"
           >
             Upcoming schedule
           </motion.p>
@@ -208,7 +220,7 @@ export function YogaPage({ ready }: Props) {
                       initial={false}
                       animate={{ opacity: dimmed ? 0.4 : 1 }}
                       transition={{ duration: 0.35, ease }}
-                      className="block py-7 sm:py-8 md:py-9"
+                      className="block py-8 sm:py-9 md:py-10"
                     >
                       <h2 className="mb-2 text-[clamp(1.25rem,3.5vw,2rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-[var(--ink)]">
                         {item.title}
@@ -228,8 +240,8 @@ export function YogaPage({ ready }: Props) {
         </div>
       </section>
 
-      <footer className="px-5 sm:px-8 md:px-10 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
-        <div className="mx-auto max-w-[1120px] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-[var(--line)] pt-8">
+      <footer className="page-pad-x pb-[max(2.5rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-[1120px] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-[var(--line)] pt-8 sm:pt-10">
           <p className="text-[13px] text-[var(--muted)]">© 2026 Shawn Jr</p>
           <a
             href={yogaContent.instagram}

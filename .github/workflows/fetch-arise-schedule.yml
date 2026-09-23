@@ -1,0 +1,45 @@
+# Refresh Arise (WellnessLiving) schedule daily so the static JSON
+# always covers a rolling ~45-day window for client-side filtering.
+name: Fetch Arise schedule
+
+on:
+  schedule:
+    - cron: '15 14 * * *' # 07:15 PT
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Scrape Arise
+        env:
+          ARISE_DAYS: '45'
+        run: npm run fetch:arise
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- public/data/arise-schedule.json; then
+            echo "No schedule changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/arise-schedule.json
+          git commit -m "chore: refresh Arise schedule (rolling window)"
+          git push
