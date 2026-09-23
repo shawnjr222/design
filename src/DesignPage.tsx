@@ -204,7 +204,7 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
       </section>
 
       <footer className="page-pad-x pb-[max(2.5rem,env(safe-area-inset-bottom))]">
-        <div className="mx-auto max-w-[1120px] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-[var(--line)] pt-8 sm:pt-10">
+        <div className="mx-auto max-w-[1120px] flex flex-row items-center justify-between gap-4 border-t border-[var(--line)] pt-8 sm:pt-10">
           <p className="text-[13px] text-[var(--muted)]">© 2026 Shawn Jr</p>
           <a
             href="https://www.linkedin.com/in/shawnjr/"
