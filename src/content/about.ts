@@ -38,4 +38,4 @@ export const aboutTitle = 'Product designer with 8+ years of experience'
 
 /** Compact about bio for the design About section */
 export const aboutBio =
-  'Trained as an industrial designer at Georgia Tech, he works across the full arc of product development and grounds every decision in empathy and craft while keeping a clear eye on business impact. He believes design has the power to build a better world, and brings that conviction to every product he shapes. Work featured on Bestfolios, Cofolios, Case Study Club, and UX Collective.'
+  'Trained as an industrial designer at Georgia Tech, he works across the full arc of product development and grounds every decision in empathy and craft while keeping a clear eye on business impact. He believes design has the power to build a better world, and brings that conviction to every product he shapes.'
