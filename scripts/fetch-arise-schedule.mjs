@@ -4,9 +4,15 @@
  * WL public APIs need signed SDK credentials + Incapsula clearance, so we
  * drive the official schedule widget in Chromium and capture Schedule.json.
  *
+ * Classes are matched on Shawn's WellnessLiving staff ID (k_staff), which
+ * exists now that he has a staff account at Arise. The ID survives name
+ * edits and can't collide with another "Shawn". The name match is only a
+ * fallback, used when ARISE_STAFF_ID is set to "".
+ *
  * Usage:
  *   node scripts/fetch-arise-schedule.mjs
- *   ARISE_STAFF_MATCH="Sophie" node scripts/fetch-arise-schedule.mjs   # debug
+ *   ARISE_STAFF_ID=521761 node scripts/fetch-arise-schedule.mjs         # debug with another teacher
+ *   ARISE_STAFF_ID= ARISE_STAFF_MATCH="Sophie" node scripts/fetch-arise-schedule.mjs
  */
 
 import { chromium } from 'playwright'
@@ -23,7 +29,9 @@ const K_SKIN = '275271'
 /** Arise SF (Pacific Heights). Oakland is 252897. */
 const K_LOCATION = '300238'
 const DAYS = Number(process.env.ARISE_DAYS || 30)
-/** Case-insensitive match against staff full name. Override to test. */
+/** Shawn Jr's WellnessLiving staff ID at Arise. Set to "" to fall back to name matching. */
+const STAFF_ID = process.env.ARISE_STAFF_ID ?? '949719'
+/** Case-insensitive match against staff full name. Only used when STAFF_ID is empty. */
 const STAFF_MATCH = process.env.ARISE_STAFF_MATCH || 'Shawn'
 
 function sleep(ms) {
@@ -51,19 +59,28 @@ function widgetUrl(dtDate) {
   return `https://www.wellnessliving.com/en-frame/rs/schedule-list-widget.html?${q}`
 }
 
-function staffMatches(cls, needle) {
-  const staff = [...(cls.a_session_staff || []), ...(cls.a_staff || [])]
+/**
+ * Who is actually teaching this session. a_session_staff reflects this
+ * occurrence (including subs); a_staff is the class's regular teacher.
+ * Preferring the session list means a class Shawn subs out of drops off,
+ * and one he subs in for shows up.
+ */
+function teachingStaff(cls) {
+  if (cls.a_session_staff?.length) return cls.a_session_staff
+  return cls.a_staff || []
+}
+
+function staffMatches(cls) {
+  const staff = teachingStaff(cls)
+  if (STAFF_ID) return staff.some((s) => String(s.k_staff) === STAFF_ID)
   const hay = staff
     .map((s) => `${s.s_name_full || ''} ${s.s_staff || ''} ${s.html_staff || ''}`)
     .join(' ')
-  return hay.toLowerCase().includes(needle.toLowerCase())
+  return hay.toLowerCase().includes(STAFF_MATCH.toLowerCase())
 }
 
 function normalizeClass(cls) {
-  const staff =
-    cls.a_session_staff?.[0]?.s_name_full ||
-    cls.a_staff?.[0]?.s_name_full ||
-    'Arise'
+  const staff = teachingStaff(cls)[0]?.s_name_full || 'Arise'
 
   const epoch = Number(cls.i_date || cls.t_time)
   let start
@@ -112,7 +129,7 @@ async function scrape() {
         for (const cls of day.a_class || []) {
           if (cls.is_cancel === '1' || cls.is_cancel === 1) continue
           if (cls.is_virtual) continue
-          if (!staffMatches(cls, STAFF_MATCH)) continue
+          if (!staffMatches(cls)) continue
           const item = normalizeClass(cls)
           if (!item) continue
           byId.set(item.id, item)
@@ -157,14 +174,16 @@ async function scrape() {
     source: 'wellnessliving',
     business: K_BUSINESS,
     location: K_LOCATION,
-    staffMatch: STAFF_MATCH,
+    staffId: STAFF_ID || null,
+    staffMatch: STAFF_ID ? null : STAFF_MATCH,
     classes,
   }
 
   await mkdir(path.dirname(OUT), { recursive: true })
   await writeFile(OUT, JSON.stringify(payload, null, 2) + '\n')
+  const matcher = STAFF_ID ? `staff ${STAFF_ID}` : `"${STAFF_MATCH}"`
   console.log(
-    `Wrote ${classes.length} Arise class(es) matching "${STAFF_MATCH}" → ${path.relative(ROOT, OUT)}`,
+    `Wrote ${classes.length} Arise class(es) for ${matcher} → ${path.relative(ROOT, OUT)}`,
   )
   return payload
 }

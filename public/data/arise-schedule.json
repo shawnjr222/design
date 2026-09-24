@@ -1,8 +1,20 @@
 {
-  "fetchedAt": "2026-09-23T18:26:15.979Z",
+  "fetchedAt": "2026-09-24T16:29:25.455Z",
   "source": "wellnessliving",
   "business": "351410",
   "location": "300238",
-  "staffMatch": "Shawn",
-  "classes": []
+  "staffId": "949719",
+  "staffMatch": null,
+  "classes": [
+    {
+      "id": "arise-18387052-1790440200",
+      "title": "Powerful Vinyasa",
+      "start": "2026-09-26T16:30:00.000Z",
+      "end": "2026-09-26T17:30:00.000Z",
+      "location": "San Francisco",
+      "studio": "Arise",
+      "signupUrl": "https://www.wellnessliving.com/rs/book-process.html?id_class_tab=1&id_mode=11&dt_date=2026-09-26+16%3A30%3A00&k_class_period=18387052&k_business=351410",
+      "staff": "Shawn Jr"
+    }
+  ]
 }
