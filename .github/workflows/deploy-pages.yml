@@ -3,6 +3,11 @@ name: Deploy GitHub Pages
 on:
   push:
     branches: [main]
+  # The daily Arise scrape commits with GITHUB_TOKEN, and GitHub doesn't let those
+  # commits trigger `push` workflows. Redeploy whenever the scrape finishes instead.
+  workflow_run:
+    workflows: [Fetch Arise schedule]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -16,11 +21,14 @@ concurrency:
 
 jobs:
   build:
+    # Skip if the scrape itself failed; the last good data stays live.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
+          ref: main   # include the scrape's fresh commit
 
       - uses: actions/setup-node@v4
         with:
