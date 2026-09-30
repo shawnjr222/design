@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { yogaContent } from './content/yoga'
 import {
@@ -94,23 +94,21 @@ export function YogaPage({ ready }: Props) {
               className="text-[clamp(1rem,2.8vw,1.2rem)] leading-[1.55] text-[var(--ink-soft)]"
             >
               Currently teaching at{' '}
-              <a
-                href={yogaContent.teaching[0].href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-[var(--line-strong)] underline-offset-[3px] text-[var(--ink-soft)] hover:text-[var(--ink)] hover:decoration-[var(--ink)] transition-colors"
-              >
-                {yogaContent.teaching[0].label}
-              </a>{' '}
-              and{' '}
-              <a
-                href={yogaContent.teaching[1].href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-[var(--line-strong)] underline-offset-[3px] text-[var(--ink-soft)] hover:text-[var(--ink)] hover:decoration-[var(--ink)] transition-colors"
-              >
-                {yogaContent.teaching[1].label}
-              </a>
+              {yogaContent.teaching.map((studio, i) => (
+                <Fragment key={studio.href}>
+                  <a
+                    href={studio.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-[var(--line-strong)] underline-offset-[3px] text-[var(--ink-soft)] hover:text-[var(--ink)] hover:decoration-[var(--ink)] transition-colors"
+                  >
+                    {studio.label}
+                  </a>
+                  {i < yogaContent.teaching.length - 2 && ', '}
+                  {i === yogaContent.teaching.length - 2 &&
+                    (yogaContent.teaching.length > 2 ? ', and ' : ' and ')}
+                </Fragment>
+              ))}
               .
             </motion.p>
           </div>

@@ -4,6 +4,7 @@ export const yogaContent = {
   teaching: [
     { label: 'Folk SF', href: 'https://folksf.com/classes/' },
     { label: 'Arise Yoga', href: 'https://www.arise.yoga/sanfrancisco' },
+    { label: 'HAUM', href: 'https://www.haumstudios.com/' },
   ],
   instagram: 'https://www.instagram.com/shawnjr.yoga',
   about: {
