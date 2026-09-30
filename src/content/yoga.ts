@@ -2,8 +2,8 @@ export const yogaContent = {
   location: 'San Francisco',
   headline: 'Shawn Jr teaches yoga with presence and care',
   teaching: [
-    { label: 'Folk SF', href: 'https://folksf.com/classes/' },
-    { label: 'Arise Yoga', href: 'https://www.arise.yoga/sanfrancisco' },
+    { label: 'Folk', href: 'https://folksf.com/' },
+    { label: 'Arise', href: 'https://www.arise.yoga/' },
     { label: 'HAUM', href: 'https://www.haumstudios.com/' },
   ],
   instagram: 'https://www.instagram.com/shawnjr.yoga',
