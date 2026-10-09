@@ -22,8 +22,13 @@ export const SITE_IMAGES = [
 
 /** Video media warmed in the background (does not block intro). */
 export const SITE_VIDEOS = projects
+  .filter((p) => isVideo(p.image) && !p.eagerLoad)
   .map((p) => p.image)
-  .filter((src) => isVideo(src))
+
+/** Videos downloaded completely during the intro, then played from memory. */
+export const SITE_EAGER_VIDEOS = projects
+  .filter((p) => isVideo(p.image) && p.eagerLoad)
+  .map((p) => p.image)
 
 /** Lottie JSON fetched + cached during intro. */
 export const SITE_LOTTIES = projects
@@ -41,6 +46,13 @@ const lottieCache = new Map<string, object>()
 
 export function getCachedLottie(src: string) {
   return lottieCache.get(src) ?? null
+}
+
+/** Fully downloaded videos (object URLs) so ProjectMedia plays them without another request. */
+const videoCache = new Map<string, string>()
+
+export function getCachedVideo(src: string) {
+  return videoCache.get(src) ?? null
 }
 
 function withTimeout<T>(promise: Promise<T>, ms: number) {
@@ -85,6 +97,17 @@ async function preloadLottie(src: string) {
   }
 }
 
+async function preloadVideoFully(src: string) {
+  try {
+    const res = await fetch(src)
+    if (!res.ok) return
+    const blob = await res.blob()
+    videoCache.set(src, URL.createObjectURL(blob))
+  } catch {
+    // Fall back to streaming the file normally.
+  }
+}
+
 function warmVideo(src: string) {
   const video = document.createElement('video')
   video.preload = 'auto'
@@ -117,11 +140,11 @@ async function preloadFonts() {
 export type PreloadProgress = (ratio: number) => void
 
 /**
- * Gate the intro on images, Lotties, fonts, and the yoga schedule.
- * Large MP4s are warmed in the background so they don't freeze the loader.
+ * Gate the intro on images, Lotties, eager videos, fonts, and the yoga schedule.
+ * Other large MP4s are warmed in the background so they don't freeze the loader.
  */
 export async function preloadSiteAssets(onProgress?: PreloadProgress) {
-  const units = SITE_IMAGES.length + SITE_LOTTIES.length + 1 + 1
+  const units = SITE_IMAGES.length + SITE_LOTTIES.length + SITE_EAGER_VIDEOS.length + 1 + 1
   let done = 0
 
   const tick = () => {
@@ -137,6 +160,7 @@ export async function preloadSiteAssets(onProgress?: PreloadProgress) {
   await Promise.all([
     ...SITE_IMAGES.map((src) => withTimeout(preloadImage(src), 6000).then(tick)),
     ...SITE_LOTTIES.map((src) => withTimeout(preloadLottie(src), 8000).then(tick)),
+    ...SITE_EAGER_VIDEOS.map((src) => withTimeout(preloadVideoFully(src), 15000).then(tick)),
     withTimeout(preloadFonts(), 3000).then(tick),
     withTimeout(
       warmUpcomingClasses(30).then(() => undefined).catch(() => undefined),

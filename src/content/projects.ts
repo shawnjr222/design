@@ -8,6 +8,8 @@ export type Project = {
   image: string
   /** Loop video/Lottie media. Defaults to false (play once). */
   loop?: boolean
+  /** Download this video completely during the intro (blocks the loader) instead of warming it in the background. */
+  eagerLoad?: boolean
 }
 
 export const projects: Project[] = [
@@ -19,8 +21,9 @@ export const projects: Project[] = [
     description:
       'Designing consumer and B2B products while establishing design processes that bring best-in-class football analysis to fans, clubs, and media.',
     url: 'https://www.gradientsports.com',
-    image: '/assets/gradient-sports.json',
+    image: '/assets/gradient-sports.mp4',
     loop: true,
+    eagerLoad: true,
   },
   {
     id: 3,

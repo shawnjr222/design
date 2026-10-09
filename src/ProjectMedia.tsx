@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Lottie, LottieSubscription, type LottieHandle } from 'lottie-react'
-import { getCachedLottie } from './lib/preload'
+import { getCachedLottie, getCachedVideo } from './lib/preload'
 
 type Props = {
   src: string
@@ -197,6 +197,7 @@ function VideoMedia({
   loop: boolean
   className?: string
 }) {
+  const cachedSrc = getCachedVideo(src)
   const { ref, revealed, inView } = useNearViewport()
   const videoRef = useRef<HTMLVideoElement>(null)
   const startedRef = useRef(false)
@@ -252,7 +253,7 @@ function VideoMedia({
     >
       <video
         ref={videoRef}
-        src={src}
+        src={cachedSrc ?? src}
         aria-label={alt}
         className="h-full w-full object-cover"
         muted
