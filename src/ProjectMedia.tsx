@@ -201,6 +201,17 @@ function VideoMedia({
   const { ref, revealed, inView } = useNearViewport()
   const videoRef = useRef<HTMLVideoElement>(null)
   const startedRef = useRef(false)
+  const endedRef = useRef(false)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || loop) return
+    const onEnded = () => {
+      endedRef.current = true
+    }
+    video.addEventListener('ended', onEnded)
+    return () => video.removeEventListener('ended', onEnded)
+  }, [loop])
 
   useEffect(() => {
     const video = videoRef.current
@@ -216,6 +227,8 @@ function VideoMedia({
     const start = () => {
       if (cancelled) return
       if (!loop) {
+        // Play-once media: after it has finished, never restart it (a play() on an ended video rewinds it).
+        if (endedRef.current || video.ended) return
         if (startedRef.current && !video.paused) return
         if (!startedRef.current) {
           startedRef.current = true
