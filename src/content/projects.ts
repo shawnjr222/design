@@ -20,6 +20,7 @@ export const projects: Project[] = [
       'Designing consumer and B2B products while establishing design processes that bring best-in-class football analysis to fans, clubs, and media.',
     url: 'https://www.gradientsports.com',
     image: '/assets/gradient-sports.json',
+    loop: true,
   },
   {
     id: 3,
