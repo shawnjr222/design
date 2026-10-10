@@ -65,7 +65,7 @@ export const projects: Project[] = [
     description:
       'Drove the product and design roadmap for mobile banking, while raising the craft bar on the core banking experience.',
     url: 'https://mercury.com',
-    image: '/assets/mercury.json',
+    image: '/assets/Mercury.mp4',
   },
   {
     id: 7,
