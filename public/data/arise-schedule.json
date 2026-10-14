@@ -1,11 +1,21 @@
 {
-  "fetchedAt": "2026-10-12T22:09:11.076Z",
+  "fetchedAt": "2026-10-14T01:19:15.931Z",
   "source": "wellnessliving",
   "business": "351410",
   "location": "300238",
   "staffId": "949719",
   "staffMatch": null,
   "classes": [
+    {
+      "id": "arise-18497686-1792033200",
+      "title": "Candlelit Restorative Yoga",
+      "start": "2026-10-15T03:00:00.000Z",
+      "end": "2026-10-15T04:00:00.000Z",
+      "location": "San Francisco",
+      "studio": "Arise",
+      "signupUrl": "https://www.wellnessliving.com/rs/book-process.html?id_class_tab=1&id_mode=11&dt_date=2026-10-15+03%3A00%3A00&k_class_period=18497686&k_business=351410",
+      "staff": "Shawn Jr"
+    },
     {
       "id": "arise-18755804-1793127600",
       "title": "Flow and Reset",
