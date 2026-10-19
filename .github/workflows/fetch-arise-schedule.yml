@@ -1,11 +1,10 @@
-# Refresh the Arise (WellnessLiving) schedule at the start of each week. The static
-# JSON covers a rolling 45-day window, so a weekly refresh keeps the site's
-# "next 30 days" view full. The site is redeployed only when the schedule changed.
+# Refresh the Arise (WellnessLiving) schedule every two days. The static JSON covers
+# a rolling 45-day window, so frequent refreshes pick up new subs quickly. The site is redeployed only when the schedule changed.
 name: Fetch Arise schedule
 
 on:
   schedule:
-    - cron: '15 14 * * 1' # Mondays 07:15 PT (GitHub may start scheduled runs late)
+    - cron: '15 14 */2 * *' # every other day, 07:15 PT (GitHub may start scheduled runs late)
   workflow_dispatch:
 
 permissions:
