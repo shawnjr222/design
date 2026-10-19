@@ -51,7 +51,7 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
             transition={{ duration: 1, delay: 0.08, ease }}
             className="mb-6 sm:mb-8 md:mb-10 text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[var(--muted)]"
           >
-            Remote & San Francisco
+            Based in San Francisco <span aria-hidden="true" className="ml-[0.35em] normal-case">🌁</span>
           </motion.p>
 
           <h1 className="max-w-[18ch] text-[clamp(2.1rem,7vw,5.25rem)] font-medium leading-[1.12] tracking-[-0.045em]">
