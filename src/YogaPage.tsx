@@ -91,7 +91,7 @@ export function YogaPage({ ready }: Props) {
               initial={{ opacity: 0, y: 40 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 1.05, delay: 0.72, ease }}
-              className="text-[clamp(1rem,2.8vw,1.2rem)] leading-[1.55] text-[var(--ink-soft)]"
+              className="text-[clamp(1rem,2.8vw,1.2rem)] leading-[1.55] text-[var(--muted)]"
             >
               Currently teaching at{' '}
               {yogaContent.teaching.map((studio, i) => (
@@ -100,7 +100,7 @@ export function YogaPage({ ready }: Props) {
                     href={studio.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="underline decoration-[var(--line-strong)] underline-offset-[3px] text-[var(--ink-soft)] hover:text-[var(--ink)] hover:decoration-[var(--ink)] transition-colors"
+                    className="underline decoration-[var(--line-strong)] underline-offset-[3px] text-[var(--muted)] hover:text-[var(--ink)] hover:decoration-[var(--ink)] transition-colors"
                   >
                     {studio.label}
                   </a>
