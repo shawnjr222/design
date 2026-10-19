@@ -49,9 +49,9 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
             initial={{ opacity: 0, y: 36 }}
             animate={ready ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1, delay: 0.08, ease }}
-            className="mb-6 sm:mb-8 md:mb-10 text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[var(--muted)]"
+            className="mb-6 sm:mb-8 md:mb-10 text-[clamp(1rem,2.8vw,1.2rem)] leading-[1.55] text-[var(--muted)]"
           >
-            Based in San Francisco <span aria-hidden="true" className="ml-[0.35em] normal-case">🌁</span>
+            Based in San Francisco <span aria-hidden="true" className="ml-[0.3em]">🌁</span>
           </motion.p>
 
           <h1 className="max-w-[18ch] text-[clamp(2.1rem,7vw,5.25rem)] font-medium leading-[1.12] tracking-[-0.045em]">
