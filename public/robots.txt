@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shawnjr.online/sitemap.xml

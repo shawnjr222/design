@@ -6,6 +6,8 @@ export type Project = {
   description: string
   url: string
   image: string
+  /** Descriptive alt text for the media. */
+  alt: string
   /** Loop video/Lottie media. Defaults to false (play once). */
   loop?: boolean
   /** Download this video completely during the intro (blocks the loader) instead of warming it in the background. */
@@ -22,6 +24,7 @@ export const projects: Project[] = [
       'Designing consumer and B2B products while establishing design processes that bring best-in-class football analysis to fans, clubs, and media.',
     url: 'https://www.gradientsports.com',
     image: '/assets/gradient-sports.mp4',
+    alt: 'Gradient Sports consumer and B2B product design for fans, clubs and media',
     loop: true,
     eagerLoad: true,
   },
@@ -34,6 +37,7 @@ export const projects: Project[] = [
       'Led design for enrollment and onboarding, helping members access personalized care for chronic and acute pain.',
     url: 'https://www.hingehealth.com',
     image: '/assets/HingeHealth.mp4',
+    alt: 'Hinge Health enrollment and onboarding design',
   },
   {
     id: 4,
@@ -44,6 +48,7 @@ export const projects: Project[] = [
       'Built a community publication while leading web and branding work that made self and collective care more accessible.',
     url: 'https://www.copingwithcapitalism.com',
     image: '/assets/CopingWithCapitalism.mp4',
+    alt: 'Coping with Capitalism community publication, website and branding',
     loop: true,
   },
   {
@@ -55,6 +60,7 @@ export const projects: Project[] = [
       'Led 0–1 design for merchant and Dasher products, expanding fulfillment types and driving significant revenue growth.',
     url: 'https://dasher.doordash.com/en-us',
     image: '/assets/DoorDash.mp4',
+    alt: 'DoorDash Dasher and merchant product design',
     loop: true,
   },
   {
@@ -66,6 +72,7 @@ export const projects: Project[] = [
       'Drove the product and design roadmap for mobile banking, while raising the craft bar on the core banking experience.',
     url: 'https://mercury.com',
     image: '/assets/Mercury.mp4',
+    alt: 'Mercury mobile banking app design',
   },
   {
     id: 7,
@@ -76,5 +83,6 @@ export const projects: Project[] = [
       'Shipped accessible, safety-first driver products across 71 countries, from research to launch, while contributing to the design system.',
     url: 'https://www.uber.com/us/en/drive/',
     image: '/assets/Uber.mp4',
+    alt: 'Uber driver Offer Card design shipped across 71 countries',
   },
 ]

@@ -129,7 +129,7 @@ export function YogaPage({ ready }: Props) {
           >
             <img
               src={yogaContent.about.photo}
-              alt="Shawn Jr"
+              alt="Portrait of Shawn Jr, yoga teacher in San Francisco"
               width={1024}
               height={910}
               decoding="async"

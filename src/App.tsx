@@ -7,12 +7,24 @@ import {
 } from 'framer-motion'
 import { DesignPage } from './DesignPage'
 import { YogaPage } from './YogaPage'
+import { NotFoundPage } from './NotFoundPage'
+import { applyNotFoundSeo, applySeo, normalizePath, routeForPath } from './lib/seo'
+import type { RouteKey } from './lib/seo'
 import { preloadSiteAssets } from './lib/preload'
 
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1]
 const INTRO_ANIM_MS = 3000
 
 type Mode = 'design' | 'yoga'
+
+/** Current URL as a route key, or null when it matches no page (404). */
+function currentRoute(): RouteKey | null {
+  return routeForPath(window.location.pathname)
+}
+
+function modeFor(route: RouteKey | null): Mode {
+  return route === '/yoga/' ? 'yoga' : 'design'
+}
 
 function Intro({
   onComplete,
@@ -172,15 +184,38 @@ function App() {
   const [ready, setReady] = useState(reduceMotion)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [headerVisible, setHeaderVisible] = useState(true)
-  const [mode, setMode] = useState<Mode>('design')
+  const [route, setRoute] = useState<RouteKey | null>(currentRoute)
+  const mode = modeFor(route)
   const lastScrollY = useRef(0)
 
-  const switchMode = (next: Mode) => {
-    if (next === mode) return
-    setMode(next)
+  const navigate = (path: string) => {
+    const next = routeForPath(path)
+    if (next === route) {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
+      return
+    }
+    window.history.pushState({}, '', path)
+    setRoute(next)
     setHoveredId(null)
     window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
   }
+
+  const switchMode = (next: Mode) => navigate(next === 'yoga' ? '/yoga/' : '/')
+
+  useEffect(() => {
+    const onPop = () => setRoute(currentRoute())
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
+  // Keep title, description, canonical and structured data in step with the URL.
+  useEffect(() => {
+    if (route) applySeo(route)
+    else applyNotFoundSeo()
+    if (route && normalizePath(window.location.pathname) !== route) {
+      window.history.replaceState({}, '', route)
+    }
+  }, [route])
 
   useEffect(() => {
     if (!introDone) return
@@ -267,10 +302,10 @@ function App() {
         >
           <div className="mx-auto flex w-full max-w-[1120px] items-center justify-between gap-3 py-4 sm:py-5 md:py-6">
             <motion.a
-              href="#"
+              href="/"
               onClick={(e) => {
                 e.preventDefault()
-                window.scrollTo({ top: 0, behavior: 'smooth' })
+                navigate('/')
               }}
               initial={{ opacity: 0, y: 16 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
@@ -280,11 +315,10 @@ function App() {
               Shawn Jr
             </motion.a>
 
-            <motion.div
+            <motion.nav
               initial={{ opacity: 0, y: 16 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.9, delay: 0.1, ease }}
-              role="tablist"
               aria-label="Site mode"
               className="shrink-0"
             >
@@ -292,13 +326,15 @@ function App() {
                 {(['design', 'yoga'] as const).map((item) => {
                   const active = mode === item
                   return (
-                    <button
+                    <a
                       key={item}
-                      type="button"
-                      role="tab"
-                      aria-selected={active}
-                      onClick={() => switchMode(item)}
-                      className={`relative min-h-10 min-w-[4.5rem] rounded-full px-3.5 sm:px-4 py-2 text-[12px] sm:text-[13px] tracking-[-0.01em] transition-colors touch-manipulation ${
+                      href={item === 'yoga' ? '/yoga/' : '/'}
+                      aria-current={active ? 'page' : undefined}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        switchMode(item)
+                      }}
+                      className={`relative inline-flex items-center justify-center min-h-10 min-w-[4.5rem] rounded-full px-3.5 sm:px-4 py-2 text-[12px] sm:text-[13px] tracking-[-0.01em] transition-colors touch-manipulation ${
                         active
                           ? 'text-[var(--ink)]'
                           : 'text-[var(--muted)] hover:text-[var(--ink-soft)]'
@@ -315,41 +351,35 @@ function App() {
                           }}
                         />
                       )}
-                      <span className="relative z-10 capitalize">{item}</span>
-                    </button>
+                      <span className="relative z-10 capitalize leading-[normal] sm:leading-[inherit]">{item}</span>
+                    </a>
                   )
                 })}
               </div>
-            </motion.div>
+            </motion.nav>
           </div>
         </motion.header>
 
         <AnimatePresence mode="wait">
-          {mode === 'design' ? (
-            <motion.div
-              key="design"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.45, ease }}
-            >
+          <motion.div
+            key={route ?? '404'}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.45, ease }}
+          >
+            {route === null ? (
+              <NotFoundPage onNavigate={navigate} />
+            ) : route === '/' ? (
               <DesignPage
                 ready={ready}
                 hoveredId={hoveredId}
                 onHover={setHoveredId}
               />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="yoga"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.45, ease }}
-            >
+            ) : (
               <YogaPage ready={ready} />
-            </motion.div>
-          )}
+            )}
+          </motion.div>
         </AnimatePresence>
       </div>
     </>

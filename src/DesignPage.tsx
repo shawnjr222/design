@@ -99,7 +99,7 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
           >
             <img
               src={aboutReference.photo}
-              alt="Shawn Jr"
+              alt="Portrait of Shawn Jr, product designer based in San Francisco"
               className="h-full w-full object-cover"
             />
             <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/5 rounded-full" />
@@ -189,7 +189,7 @@ export function DesignPage({ ready, hoveredId, onHover }: Props) {
                     <div className="relative order-1 md:order-2 overflow-hidden rounded-[1rem] aspect-[16/10]">
                       <ProjectMedia
                         src={project.image}
-                        alt={project.title}
+                        alt={project.alt}
                         priority={project.id === 1}
                         loop={project.loop}
                         className="absolute inset-0 h-full w-full"

@@ -1,0 +1,45 @@
+{
+  "site": "https://shawnjr.online",
+  "name": "Shawn Jr",
+  "ogImage": "/og.png",
+  "person": {
+    "@type": "Person",
+    "@id": "https://shawnjr.online/#person",
+    "name": "Shawn Jr",
+    "url": "https://shawnjr.online/",
+    "jobTitle": "Product Designer",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Gradient Sports",
+      "url": "https://www.gradientsports.com"
+    },
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "Georgia Institute of Technology"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "San Francisco",
+      "addressRegion": "CA",
+      "addressCountry": "US"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/shawnjr/",
+      "https://www.instagram.com/shawnjr.yoga"
+    ]
+  },
+  "routes": {
+    "/": {
+      "title": "Shawn Jr, Product Designer",
+      "description": "Product designer with 8+ years based in San Francisco, CA",
+      "type": "website",
+      "label": "Home"
+    },
+    "/yoga/": {
+      "title": "Shawn Jr, Yoga Teacher",
+      "description": "Yoga teacher (500 RYT) based in San Francisco, CA",
+      "type": "website",
+      "label": "Yoga"
+    }
+  }
+}
