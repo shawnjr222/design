@@ -154,9 +154,6 @@ export async function preloadSiteAssets(onProgress?: PreloadProgress) {
 
   onProgress?.(0)
 
-  // Kick videos immediately, but don't await them.
-  for (const src of SITE_VIDEOS) warmVideo(src)
-
   await Promise.all([
     ...SITE_IMAGES.map((src) => withTimeout(preloadImage(src), 6000).then(tick)),
     ...SITE_LOTTIES.map((src) => withTimeout(preloadLottie(src), 8000).then(tick)),
@@ -169,4 +166,7 @@ export async function preloadSiteAssets(onProgress?: PreloadProgress) {
   ])
 
   onProgress?.(1)
+
+  // Warm the remaining videos only now, so they never queue ahead of what the intro waits on.
+  for (const src of SITE_VIDEOS) warmVideo(src)
 }

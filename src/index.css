@@ -52,6 +52,7 @@ body,
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -65,8 +66,17 @@ body {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  background: #e6d3b3;
   color: var(--ink);
+}
+
+::-moz-selection {
+  background: #e6d3b3;
+  color: var(--ink);
+}
+
+body {
+  transition: background-color 900ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .ambient {
@@ -74,11 +84,8 @@ body {
   position: fixed;
   inset: 0;
   z-index: 0;
-  background:
-    radial-gradient(ellipse 80% 55% at 50% -10%, rgba(31, 77, 69, 0.07), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 100% 30%, rgba(17, 17, 16, 0.035), transparent 50%),
-    radial-gradient(ellipse 45% 35% at 0% 70%, rgba(31, 77, 69, 0.04), transparent 50%),
-    var(--bg);
+  background: var(--bg);
+  transition: background-color 900ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .noise {
@@ -109,4 +116,30 @@ body {
     padding-left: max(3rem, env(safe-area-inset-left, 0px));
     padding-right: max(3rem, env(safe-area-inset-right, 0px));
   }
+}
+
+.chip-tone:hover { background: var(--tone-hover) !important; }
+
+/* About link: the line draws in left to right on hover, then leaves out to the right. */
+.about-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-link:hover::after,
+.about-link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-link::after { transition-duration: 1ms; }
 }

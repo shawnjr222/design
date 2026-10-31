@@ -100,7 +100,7 @@ write(
   join(dist, '404.html'),
   withSeo(
     template,
-    seoBlock('/', { noindex: true, title: 'Page not found, Shawn Jr', description: 'Page not found' }),
+    seoBlock('/', { noindex: true, title: 'Page not found • Shawn Jr', description: 'Page not found' }),
   ),
 )
 

@@ -3,37 +3,24 @@ import { motion } from 'framer-motion'
 import { yogaContent } from './content/yoga'
 import {
   warmUpcomingClasses,
-  formatClassTimeRange,
-  formatLocationLabel,
   type YogaClass,
 } from './lib/schedule'
 import { WordReveal } from './WordReveal'
+import { SiteFooter } from './SiteFooter'
+import { ClassCalendar } from './ClassCalendar'
+import { ReadyReveal } from './ReadyReveal'
+
 
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 type Props = {
   ready: boolean
+  onNavigate?: (path: string) => void
 }
 
-export function YogaPage({ ready }: Props) {
+export function YogaPage({ ready, onNavigate }: Props) {
   const [classes, setClasses] = useState<YogaClass[]>([])
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
-  const [hoveredId, setHoveredId] = useState<string | null>(null)
-  const [canHover, setCanHover] = useState(false)
-
-  useEffect(() => {
-    const mq = window.matchMedia('(hover: hover) and (pointer: fine)')
-    const sync = () => setCanHover(mq.matches)
-    sync()
-    mq.addEventListener('change', sync)
-    return () => mq.removeEventListener('change', sync)
-  }, [])
-
-  useEffect(() => {
-    const clearHover = () => setHoveredId(null)
-    window.addEventListener('scroll', clearHover, { passive: true })
-    return () => window.removeEventListener('scroll', clearHover)
-  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -67,13 +54,13 @@ export function YogaPage({ ready }: Props) {
 
   return (
     <>
-      <section className="relative min-h-[100svh] flex flex-col justify-center page-pad-x pt-28 sm:pt-24 pb-12">
+      <section className="relative min-h-[68svh] flex flex-col justify-end page-pad-x pt-28 sm:pt-32 pb-10 sm:pb-14">
         <div className="mx-auto w-full max-w-[1120px]">
           <motion.p
             initial={{ opacity: 0, y: 36 }}
             animate={ready ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1, delay: 0.08, ease }}
-            className="mb-6 sm:mb-8 md:mb-10 text-[clamp(1rem,2.8vw,1.2rem)] leading-[1.55] text-[var(--muted)]"
+            className="mb-3 sm:mb-4 text-[clamp(1rem,2.8vw,1.2rem)] leading-[1.55] text-[var(--muted)]"
           >
             Based in {yogaContent.location} <span aria-hidden="true" className="ml-[0.3em]">🌁</span>
           </motion.p>
@@ -86,7 +73,7 @@ export function YogaPage({ ready }: Props) {
             />
           </h1>
 
-          <div className="mt-6 sm:mt-8 md:mt-10 max-w-[32rem]">
+          <div className="mt-4 sm:mt-5 max-w-[32rem]">
             <motion.p
               initial={{ opacity: 0, y: 40 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
@@ -100,7 +87,7 @@ export function YogaPage({ ready }: Props) {
                     href={studio.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="underline decoration-[var(--line-strong)] underline-offset-[3px] text-[var(--muted)] hover:text-[var(--ink)] hover:decoration-[var(--ink)] transition-colors"
+                    className="underline decoration-[var(--line-strong)] underline-offset-[3px] text-[var(--muted)] transition-colors duration-300 hover:text-black hover:decoration-black"
                   >
                     {studio.label}
                   </a>
@@ -111,67 +98,16 @@ export function YogaPage({ ready }: Props) {
               ))}
               .
             </motion.p>
+
           </div>
+
         </div>
       </section>
 
-      <section
-        id="about"
-        className="relative min-h-[100svh] flex flex-col justify-start page-pad-x pt-10 sm:pt-14 pb-8 sm:pb-10"
-      >
-        <div className="mx-auto max-w-[1120px] flex flex-col items-center text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.7, ease }}
-            className="relative overflow-hidden rounded-full bg-[var(--bg-elevated)] aspect-square w-[140px] sm:w-[180px] md:w-[200px]"
-          >
-            <img
-              src={yogaContent.about.photo}
-              alt="Portrait of Shawn Jr, yoga teacher in San Francisco"
-              width={1024}
-              height={910}
-              decoding="async"
-              className="h-full w-full object-cover object-[center_28%] select-none"
-              draggable={false}
-            />
-            <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/5 rounded-full" />
-          </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.7, ease }}
-            className="mt-5 sm:mt-6 mb-4 max-w-[28rem] text-[clamp(1.25rem,4.5vw,1.95rem)] font-medium leading-[1.2] tracking-[-0.03em]"
-          >
-            {yogaContent.about.title}
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.7, ease }}
-            className="max-w-[36rem] text-[15px] sm:text-[16px] leading-[1.6] text-[var(--ink-soft)]"
-          >
-            {yogaContent.about.bio}
-          </motion.p>
-        </div>
-      </section>
-
-      <section id="schedule" className="page-pad-x pt-16 sm:pt-20 md:pt-28 pb-16 sm:pb-20 md:pb-28">
-        <div className="mx-auto max-w-[1120px]">
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.7, ease }}
-            className="mb-8 sm:mb-10 md:mb-12 text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[var(--muted)]"
-          >
-            Upcoming schedule
-          </motion.p>
+      <section id="schedule" className="page-pad-x pt-6 sm:pt-8 pb-12 sm:pb-16">
+        <ReadyReveal ready={ready} delay={1.2} y={36} amount={0.04} className="mx-auto max-w-[1120px]">
+          <p className="mb-4 sm:mb-6 text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[var(--muted)]">Upcoming schedule</p>
 
           {status === 'loading' && (
             <p className="text-[15px] text-[var(--muted)] py-8 border-t border-[var(--line)]">
@@ -192,65 +128,11 @@ export function YogaPage({ ready }: Props) {
             </p>
           )}
 
-          {status === 'ready' && classes.length > 0 && (
-            <ul
-              className="flex flex-col"
-              onMouseLeave={() => {
-                if (canHover) setHoveredId(null)
-              }}
-            >
-              {classes.map((item) => {
-                const dimmed =
-                  canHover && hoveredId !== null && hoveredId !== item.id
-
-                return (
-                  <li
-                    key={item.id}
-                    onMouseEnter={() => {
-                      if (canHover) setHoveredId(item.id)
-                    }}
-                    className="border-t border-[var(--line)]"
-                  >
-                    <motion.a
-                      href={item.signupUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      initial={false}
-                      animate={{ opacity: dimmed ? 0.4 : 1 }}
-                      transition={{ duration: 0.35, ease }}
-                      className="block py-8 sm:py-9 md:py-10"
-                    >
-                      <h2 className="mb-2 text-[clamp(1.25rem,3.5vw,2rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-[var(--ink)]">
-                        {item.title}
-                      </h2>
-                      <p className="text-[14px] sm:text-[15px] text-[var(--ink-soft)]">
-                        {formatLocationLabel(item.studio, item.location)}
-                      </p>
-                      <p className="mt-4 sm:mt-5 text-[13px] sm:text-[14px] text-[var(--muted)]">
-                        {formatClassTimeRange(item.start, item.end)}
-                      </p>
-                    </motion.a>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-        </div>
+          {status === 'ready' && classes.length > 0 && <ClassCalendar classes={classes} />}
+        </ReadyReveal>
       </section>
 
-      <footer className="page-pad-x pb-[max(2.5rem,env(safe-area-inset-bottom))]">
-        <div className="mx-auto max-w-[1120px] flex flex-row items-center justify-between gap-4 border-t border-[var(--line)] pt-8 sm:pt-10">
-          <p className="text-[13px] text-[var(--muted)]">© 2026 Shawn Jr</p>
-          <a
-            href={yogaContent.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[13px] text-[var(--muted)] hover:text-[var(--ink-soft)] transition-colors"
-          >
-            Instagram
-          </a>
-        </div>
-      </footer>
+      <SiteFooter mode="yoga" onNavigate={onNavigate} />
     </>
   )
 }

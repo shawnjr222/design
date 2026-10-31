@@ -11,9 +11,13 @@ import { NotFoundPage } from './NotFoundPage'
 import { applyNotFoundSeo, applySeo, normalizePath, routeForPath } from './lib/seo'
 import type { RouteKey } from './lib/seo'
 import { preloadSiteAssets } from './lib/preload'
+import { IntroName } from './IntroName'
+import { AboutModal } from './AboutModal'
+import { aboutBio, aboutReference, aboutTitle } from './content/about'
+import { yogaContent } from './content/yoga'
 
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1]
-const INTRO_ANIM_MS = 3000
+const INTRO_ANIM_MS = 1500
 
 type Mode = 'design' | 'yoga'
 
@@ -38,16 +42,17 @@ function Intro({
   const [loading, setLoading] = useState(false)
   const assetsReady = useRef(false)
   const animReady = useRef(false)
+  const choreoDone = useRef(false)
   const finished = useRef(false)
   const onCompleteRef = useRef(onComplete)
   onCompleteRef.current = onComplete
 
   const tryFinish = () => {
     if (finished.current) return
-    if (!assetsReady.current || !animReady.current) return
+    if (!assetsReady.current || !animReady.current || !choreoDone.current) return
     finished.current = true
     // Brief hold at 100%, then AnimatePresence runs the exit fade.
-    window.setTimeout(() => onCompleteRef.current(), reduceMotion ? 0 : 420)
+    window.setTimeout(() => onCompleteRef.current(), reduceMotion ? 0 : 300)
   }
 
   useEffect(() => {
@@ -60,6 +65,7 @@ function Intro({
         assetsReady.current = true
         if (reduceMotion) {
           animReady.current = true
+          choreoDone.current = true
         }
         tryFinish()
       })
@@ -69,8 +75,9 @@ function Intro({
       if (cancelled) return
       assetsReady.current = true
       animReady.current = true
+      choreoDone.current = true
       tryFinish()
-    }, 7000)
+    }, 9000)
 
     return () => {
       cancelled = true
@@ -82,7 +89,7 @@ function Intro({
   useEffect(() => {
     if (reduceMotion) return
 
-    const start = window.setTimeout(() => setLoading(true), 700)
+    const start = window.setTimeout(() => setLoading(true), 300)
     return () => window.clearTimeout(start)
   }, [reduceMotion])
 
@@ -110,73 +117,33 @@ function Intro({
 
   if (reduceMotion) return null
 
+  const fill = Math.min(Math.max(progressExact, 0), 100)
+
   return (
     <motion.div
       key="intro"
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0c0c0b] text-[#f3f3f1] overflow-hidden"
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[var(--bg)] text-[var(--ink)]"
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{
         opacity: 0,
         transition: {
-          duration: 1.05,
+          duration: 0.8,
           ease: [0.22, 1, 0.36, 1],
         },
       }}
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[22vh] bg-gradient-to-t from-[#f3f3f1]/25 via-[#f3f3f1]/08 to-transparent"
-        style={{ opacity: progressExact / 100 }}
-      />
-
-      <motion.div
-        className="relative z-10 flex flex-col items-center gap-8 px-6"
-        exit={{
-          opacity: 0,
-          y: -6,
-          transition: { duration: 0.45, ease: [0.4, 0, 0.2, 1] },
+      <IntroName
+        fill={fill}
+        progress={progress}
+        onDone={() => {
+          choreoDone.current = true
+          tryFinish()
         }}
-      >
-        <div className="overflow-hidden">
-          <motion.p
-            className="text-[11px] tracking-[0.32em] uppercase text-[#f3f3f1]/45"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.7, ease, delay: 0.1 }}
-          >
-            Loading
-          </motion.p>
-        </div>
-
-        <motion.div
-          className="flex flex-col items-center gap-8"
-          initial={{ opacity: 0 }}
-          animate={loading ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.35, ease }}
-        >
-          <div
-            className="h-px w-[120px] origin-center bg-[#f3f3f1]/75 will-change-transform"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={progress}
-            style={{ transform: `scaleX(${Math.max(progressExact / 100, 0.02)})` }}
-          />
-
-          <p
-            className="text-center text-[13px] tabular-nums tracking-[0.08em] text-[#f3f3f1]/55"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {progress}%
-          </p>
-        </motion.div>
-      </motion.div>
+      />
     </motion.div>
   )
 }
-
 
 function App() {
   const reduceMotion = useReducedMotion() ?? false
@@ -185,6 +152,8 @@ function App() {
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [headerVisible, setHeaderVisible] = useState(true)
   const [route, setRoute] = useState<RouteKey | null>(currentRoute)
+  const [aboutOpen, setAboutOpen] = useState(false)
+  const [aboutOrigin, setAboutOrigin] = useState<DOMRect | null>(null)
   const mode = modeFor(route)
   const lastScrollY = useRef(0)
 
@@ -197,7 +166,8 @@ function App() {
     window.history.pushState({}, '', path)
     setRoute(next)
     setHoveredId(null)
-    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
+    // The scroll back to the top happens once the old page has faded out (see onExitComplete),
+    // so the new page's load-in plays at the top of the screen where it can be seen.
   }
 
   const switchMode = (next: Mode) => navigate(next === 'yoga' ? '/yoga/' : '/')
@@ -300,20 +270,25 @@ function App() {
           transition={{ duration: reduceMotion ? 0.01 : 0.35, ease }}
           style={{ pointerEvents: headerVisible ? 'auto' : 'none' }}
         >
-          <div className="mx-auto flex w-full max-w-[1120px] items-center justify-between gap-3 py-4 sm:py-5 md:py-6">
-            <motion.a
-              href="/"
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-[calc(100%+1.25rem)] bg-gradient-to-b from-[var(--bg)] from-60% to-transparent"
+          />
+          <div className="relative mx-auto flex w-full max-w-[1120px] items-center justify-between gap-3 py-4 sm:py-5 md:py-6">
+            <motion.button
+              type="button"
+              aria-haspopup="dialog"
               onClick={(e) => {
-                e.preventDefault()
-                navigate('/')
+                setAboutOrigin(e.currentTarget.getBoundingClientRect())
+                setAboutOpen(true)
               }}
               initial={{ opacity: 0, y: 16 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.9, delay: 0.05, ease }}
-              className="shrink-0 text-[14px] sm:text-[15px] font-medium tracking-[-0.02em]"
+              className="about-link relative shrink-0 cursor-pointer text-[14px] sm:text-[15px] font-medium tracking-[-0.02em]"
             >
-              Shawn Jr
-            </motion.a>
+              About<span className="sr-only"> Shawn Jr</span>
+            </motion.button>
 
             <motion.nav
               initial={{ opacity: 0, y: 16 }}
@@ -334,10 +309,10 @@ function App() {
                         e.preventDefault()
                         switchMode(item)
                       }}
-                      className={`relative inline-flex items-center justify-center min-h-10 min-w-[4.5rem] rounded-full px-3.5 sm:px-4 py-2 text-[12px] sm:text-[13px] tracking-[-0.01em] transition-colors touch-manipulation ${
+                      className={`relative inline-flex items-center justify-center min-h-10 min-w-[4.5rem] rounded-full px-3.5 sm:px-4 py-2 text-[12px] sm:text-[13px] tracking-[-0.01em] transition-[color,opacity] duration-300 touch-manipulation ${
                         active
                           ? 'text-[var(--ink)]'
-                          : 'text-[var(--muted)] hover:text-[var(--ink-soft)]'
+                          : 'text-[var(--muted)] hover:opacity-60'
                       }`}
                     >
                       {active && (
@@ -360,7 +335,10 @@ function App() {
           </div>
         </motion.header>
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence
+          mode="wait"
+          onExitComplete={() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })}
+        >
           <motion.div
             key={route ?? '404'}
             initial={{ opacity: 0, y: 20 }}
@@ -375,13 +353,28 @@ function App() {
                 ready={ready}
                 hoveredId={hoveredId}
                 onHover={setHoveredId}
+                onNavigate={navigate}
               />
             ) : (
-              <YogaPage ready={ready} />
+              <YogaPage ready={ready} onNavigate={navigate} />
             )}
           </motion.div>
         </AnimatePresence>
       </div>
+          <AboutModal
+        open={aboutOpen}
+        onClose={() => setAboutOpen(false)}
+        origin={aboutOrigin}
+        photo={mode === 'yoga' ? yogaContent.about.photo : aboutReference.photo}
+        alt={
+          mode === 'yoga'
+            ? 'Portrait of Shawn Jr, yoga teacher in San Francisco'
+            : 'Portrait of Shawn Jr, product designer based in San Francisco'
+        }
+        label={mode === 'yoga' ? yogaContent.about.title : aboutTitle}
+        bio={mode === 'yoga' ? yogaContent.about.bio : aboutBio}
+        photoClassName={mode === 'yoga' ? 'object-[center_28%]' : ''}
+      />
     </>
   )
 }

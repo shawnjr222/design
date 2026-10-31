@@ -6,6 +6,10 @@ export const yogaContent = {
     { label: 'Arise', href: 'https://www.arise.yoga/' },
     { label: 'HAUM', href: 'https://www.haumstudios.com/' },
   ],
+  teachers: [
+    { label: 'Martin Scott', href: 'https://www.martinyoga.com' },
+    { label: 'Europa Grace', href: 'https://youropeah.wixsite.com/europagrace' },
+  ],
   instagram: 'https://www.instagram.com/shawnjr.yoga',
   about: {
     title: 'Equanimity of mind is Yoga',

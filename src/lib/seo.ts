@@ -72,6 +72,6 @@ export function applySeo(path: RouteKey) {
 }
 
 export function applyNotFoundSeo() {
-  document.title = 'Page not found, Shawn Jr'
+  document.title = 'Page not found • Shawn Jr'
   setMeta('meta[name="robots"]', 'content', 'noindex,follow')
 }

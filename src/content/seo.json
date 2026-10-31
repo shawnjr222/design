@@ -30,13 +30,13 @@
   },
   "routes": {
     "/": {
-      "title": "Shawn Jr, Product Designer",
+      "title": "Shawn Jr • Design",
       "description": "Product designer with 8+ years based in San Francisco, CA",
       "type": "website",
       "label": "Home"
     },
     "/yoga/": {
-      "title": "Shawn Jr, Yoga Teacher",
+      "title": "Shawn Jr • Yoga",
       "description": "Yoga teacher (500 RYT) based in San Francisco, CA",
       "type": "website",
       "label": "Yoga"

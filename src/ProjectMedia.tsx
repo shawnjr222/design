@@ -9,12 +9,18 @@ type Props = {
   priority?: boolean
   loop?: boolean
   className?: string
+  /** Reveal as soon as any of it peeks into view (for the first project, which can sit half off-screen). */
+  peek?: boolean
+  /** Hold the reveal until the row around it is ready (page loaded and row on screen). */
+  reveal?: boolean
+  /** Seconds to wait after `reveal` before fading in, so the media lands just behind its text. */
+  revealDelay?: number
 }
 
 const landEase: [number, number, number, number] = [0.22, 1, 0.36, 1]
 const landTransition = { duration: 1, ease: landEase }
-/** Wait until the asset is further into view before revealing / playing. */
-const PLAY_DELAY_MS = 380
+/** Extra hold once the asset qualifies as in view, before it reveals. None: it reveals straight away. */
+const PLAY_DELAY_MS = 0
 
 const landHidden = { opacity: 0, scale: 0.94 }
 const landVisible = { opacity: 1, scale: 1 }
@@ -31,7 +37,7 @@ function isVideo(src: string) {
  * `revealed` fires once (drives fade + scale-in).
  * `inView` updates continuously (for pausing loop media only).
  */
-function useNearViewport() {
+function useNearViewport(peek = false) {
   const ref = useRef<HTMLDivElement>(null)
   const [revealed, setRevealed] = useState(false)
   const [inView, setInView] = useState(false)
@@ -59,7 +65,9 @@ function useNearViewport() {
 
       setInView(near)
 
-      if (!near) {
+      // Normally media waits until it is mostly on screen; a peeking first image reveals right away.
+      const eligible = peek ? ratio > 0.04 : near
+      if (!eligible) {
         clearDelay()
         return
       }
@@ -77,7 +85,7 @@ function useNearViewport() {
     window.addEventListener('scroll', check, { passive: true })
     window.addEventListener('resize', check)
     const io = new IntersectionObserver(() => check(), {
-      threshold: [0, 0.25, 0.45, 0.6, 0.8],
+      threshold: [0, 0.05, 0.25, 0.45, 0.6, 0.8],
       rootMargin: '0px',
     })
     io.observe(node)
@@ -88,7 +96,7 @@ function useNearViewport() {
       window.removeEventListener('resize', check)
       io.disconnect()
     }
-  }, [])
+  }, [peek])
 
   return { ref, revealed, inView }
 }
@@ -99,13 +107,17 @@ export function ProjectMedia({
   priority = false,
   loop = false,
   className,
+  peek = false,
+  reveal = true,
+  revealDelay = 0,
 }: Props) {
+  const gate = { peek, reveal, revealDelay }
   if (isLottie(src)) {
-    return <LottieMedia src={src} alt={alt} loop={loop} className={className} />
+    return <LottieMedia src={src} alt={alt} loop={loop} className={className} {...gate} />
   }
 
   if (isVideo(src)) {
-    return <VideoMedia src={src} alt={alt} loop={loop} className={className} />
+    return <VideoMedia src={src} alt={alt} loop={loop} className={className} {...gate} />
   }
 
   return (
@@ -114,7 +126,7 @@ export function ProjectMedia({
       alt={alt}
       decoding="async"
       fetchPriority={priority ? 'high' : 'low'}
-      className={`${className ?? ''} origin-center`}
+      className={`${className ?? ''} origin-center overflow-hidden rounded-[1rem]`}
       initial={landHidden}
       whileInView={landVisible}
       viewport={{ once: true, amount: 0.45 }}
@@ -128,18 +140,24 @@ function LottieMedia({
   alt,
   loop,
   className,
+  peek,
+  reveal,
+  revealDelay,
 }: {
   src: string
   alt: string
   loop: boolean
   className?: string
+  peek: boolean
+  reveal: boolean
+  revealDelay: number
 }) {
   const lottieRef = useRef<LottieHandle>(null)
   const cached = getCachedLottie(src)
   const [ready, setReady] = useState(Boolean(cached))
-  const { ref, revealed, inView } = useNearViewport()
+  const { ref, revealed, inView } = useNearViewport(peek)
   const startedRef = useRef(false)
-  const show = ready && revealed
+  const show = ready && revealed && reveal
 
   useEffect(() => {
     if (!show) return
@@ -161,10 +179,10 @@ function LottieMedia({
   return (
     <motion.div
       ref={ref}
-      className={`${className ?? ''} origin-center`}
+      className={`${className ?? ''} origin-center overflow-hidden rounded-[1rem]`}
       initial={landHidden}
       animate={show ? landVisible : landHidden}
-      transition={landTransition}
+      transition={{ ...landTransition, delay: revealDelay }}
     >
       <Lottie
         lottieRef={lottieRef}
@@ -191,14 +209,20 @@ function VideoMedia({
   alt,
   loop,
   className,
+  peek,
+  reveal,
+  revealDelay,
 }: {
   src: string
   alt: string
   loop: boolean
   className?: string
+  peek: boolean
+  reveal: boolean
+  revealDelay: number
 }) {
   const cachedSrc = getCachedVideo(src)
-  const { ref, revealed, inView } = useNearViewport()
+  const { ref, revealed, inView } = useNearViewport(peek)
   const videoRef = useRef<HTMLVideoElement>(null)
   const startedRef = useRef(false)
   const endedRef = useRef(false)
@@ -259,10 +283,10 @@ function VideoMedia({
   return (
     <motion.div
       ref={ref}
-      className={`${className ?? ''} origin-center`}
+      className={`${className ?? ''} origin-center overflow-hidden rounded-[1rem]`}
       initial={landHidden}
-      animate={revealed ? landVisible : landHidden}
-      transition={landTransition}
+      animate={revealed && reveal ? landVisible : landHidden}
+      transition={{ ...landTransition, delay: revealDelay }}
     >
       <video
         ref={videoRef}
