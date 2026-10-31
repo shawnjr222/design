@@ -227,6 +227,16 @@ function VideoMedia({
   const { ref, revealed, inView } = useNearViewport(peek)
   const videoRef = useRef<HTMLVideoElement>(null)
 
+  // Safari decides whether a video may autoplay from its muted attribute, and React only sets the property
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    video.muted = true
+    video.defaultMuted = true
+    video.setAttribute('muted', '')
+    video.setAttribute('playsinline', '')
+  }, [])
+
   // Make sure a first frame is painted even while the video is paused, so the area is never blank
   // before it plays (some mobile browsers do not draw a paused video until it has been nudged).
   useEffect(() => {
@@ -274,7 +284,6 @@ function VideoMedia({
       if (!loop) {
         // Play-once media: after it has finished, never restart it (a play() on an ended video rewinds it).
         if (endedRef.current || video.ended) return
-        if (startedRef.current && !video.paused) return
         if (!startedRef.current) {
           startedRef.current = true
           try {
@@ -284,20 +293,30 @@ function VideoMedia({
           }
         }
       }
-      void video.play().catch(() => {})
+      if (video.paused) void video.play().catch(() => {})
     }
 
     start()
     const onReady = () => start()
     video.addEventListener('loadeddata', onReady)
     video.addEventListener('canplay', onReady)
-    const retry = window.setTimeout(start, 250)
+    // A browser can refuse or interrupt playback (autoplay rules, the tab being hidden, scrolling away
+    // and back). Keep nudging while the video is on screen until it is playing or has finished, so it
+    // can never be left stuck on a frame with the designs missing.
+    const keepPlaying = window.setInterval(() => {
+      if (inView) start()
+    }, 400)
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && inView) start()
+    }
+    document.addEventListener('visibilitychange', onVisible)
 
     return () => {
       cancelled = true
-      window.clearTimeout(retry)
+      window.clearInterval(keepPlaying)
       video.removeEventListener('loadeddata', onReady)
       video.removeEventListener('canplay', onReady)
+      document.removeEventListener('visibilitychange', onVisible)
     }
   }, [revealed, inView, loop])
 
