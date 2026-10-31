@@ -1,70 +1,9 @@
 {
-  "fetchedAt": "2026-10-25T17:39:01.125Z",
+  "fetchedAt": "2026-10-31T18:31:32.612Z",
   "source": "wellnessliving",
   "business": "351410",
   "location": "300238",
   "staffId": "949719",
   "staffMatch": null,
-  "classes": [
-    {
-      "id": "arise-18973243-1793736000",
-      "title": "Flow and Reset",
-      "start": "2026-11-03T20:00:00.000Z",
-      "end": "2026-11-03T21:00:00.000Z",
-      "location": "San Francisco",
-      "studio": "Arise",
-      "signupUrl": "https://www.wellnessliving.com/rs/book-process.html?id_class_tab=1&id_mode=11&dt_date=2026-11-03+20%3A00%3A00&k_class_period=18973243&k_business=351410",
-      "staff": "Shawn Jr"
-    },
-    {
-      "id": "arise-18973243-1794340800",
-      "title": "Flow and Reset",
-      "start": "2026-11-10T20:00:00.000Z",
-      "end": "2026-11-10T21:00:00.000Z",
-      "location": "San Francisco",
-      "studio": "Arise",
-      "signupUrl": "https://www.wellnessliving.com/rs/book-process.html?id_class_tab=1&id_mode=11&dt_date=2026-11-10+20%3A00%3A00&k_class_period=18973243&k_business=351410",
-      "staff": "Shawn Jr"
-    },
-    {
-      "id": "arise-18973243-1794945600",
-      "title": "Flow and Reset",
-      "start": "2026-11-17T20:00:00.000Z",
-      "end": "2026-11-17T21:00:00.000Z",
-      "location": "San Francisco",
-      "studio": "Arise",
-      "signupUrl": "https://www.wellnessliving.com/rs/book-process.html?id_class_tab=1&id_mode=11&dt_date=2026-11-17+20%3A00%3A00&k_class_period=18973243&k_business=351410",
-      "staff": "Shawn Jr"
-    },
-    {
-      "id": "arise-18973243-1795550400",
-      "title": "Flow and Reset",
-      "start": "2026-11-24T20:00:00.000Z",
-      "end": "2026-11-24T21:00:00.000Z",
-      "location": "San Francisco",
-      "studio": "Arise",
-      "signupUrl": "https://www.wellnessliving.com/rs/book-process.html?id_class_tab=1&id_mode=11&dt_date=2026-11-24+20%3A00%3A00&k_class_period=18973243&k_business=351410",
-      "staff": "Shawn Jr"
-    },
-    {
-      "id": "arise-18973243-1796155200",
-      "title": "Flow and Reset",
-      "start": "2026-12-01T20:00:00.000Z",
-      "end": "2026-12-01T21:00:00.000Z",
-      "location": "San Francisco",
-      "studio": "Arise",
-      "signupUrl": "https://www.wellnessliving.com/rs/book-process.html?id_class_tab=1&id_mode=11&dt_date=2026-12-01+20%3A00%3A00&k_class_period=18973243&k_business=351410",
-      "staff": "Shawn Jr"
-    },
-    {
-      "id": "arise-18973243-1796760000",
-      "title": "Flow and Reset",
-      "start": "2026-12-08T20:00:00.000Z",
-      "end": "2026-12-08T21:00:00.000Z",
-      "location": "San Francisco",
-      "studio": "Arise",
-      "signupUrl": "https://www.wellnessliving.com/rs/book-process.html?id_class_tab=1&id_mode=11&dt_date=2026-12-08+20%3A00%3A00&k_class_period=18973243&k_business=351410",
-      "staff": "Shawn Jr"
-    }
-  ]
+  "classes": []
 }
