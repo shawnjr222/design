@@ -137,10 +137,9 @@ export function ClassCalendar({ classes }: { classes: YogaClass[] }) {
         </div>
         <div className="grid grid-cols-7 border-l border-[var(--line)]">
           {days.map((day, i) => (
-            <div
-              key={day.key}
-              className={`min-h-[7.25rem] border-b border-r border-[var(--line)] p-1.5 ${day.past ? 'opacity-40' : ''}`}
-            >
+            <div key={day.key} className="min-h-[7.25rem] border-b border-r border-[var(--line)] p-1.5">
+              {/* Only past dates are greyed, and only their contents: every grid line stays identical */}
+              <div className={day.past ? 'opacity-40' : ''}>
               <p
                 className={`mb-1.5 inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-[12px] tabular-nums ${
                   day.today ? 'bg-[var(--ink)] text-[var(--bg)]' : 'text-[var(--muted)]'
@@ -152,6 +151,7 @@ export function ClassCalendar({ classes }: { classes: YogaClass[] }) {
                 {day.classes.map((c) => (
                   <ClassChip key={c.id} item={c} alignRight={i % 7 >= 4} />
                 ))}
+              </div>
               </div>
             </div>
           ))}
