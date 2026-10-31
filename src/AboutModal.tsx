@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -22,6 +22,7 @@ type Props = {
 export function AboutModal({ open, onClose, photo, alt, label, bio, photoClassName = '', origin = null }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
+  const headingId = useId()
 
   // Point the card's scale origin at the button it came from.
   useLayoutEffect(() => {
@@ -70,8 +71,8 @@ export function AboutModal({ open, onClose, photo, alt, label, bio, photoClassNa
             ref={panelRef}
             role="dialog"
             aria-modal="true"
-            aria-label="About"
-            className="relative w-full max-w-[34rem] rounded-[1.75rem] border border-[var(--line)] bg-[var(--bg)] p-7 shadow-[0_40px_90px_-30px_rgba(17,17,16,0.45)] sm:p-10"
+            aria-labelledby={headingId}
+            className="relative w-full max-w-[34rem] [container-type:inline-size] rounded-[1.75rem] border border-[var(--line)] bg-[var(--bg)] p-7 shadow-[0_40px_90px_-30px_rgba(17,17,16,0.45)] sm:p-10"
             initial={{ opacity: 0, scale: origin ? 0.3 : 0.94, y: origin ? 0 : 28 }}
             animate={{ opacity: 1, scale: 1, y: 0, transition: { ...card, opacity: { duration: 0.3, ease } } }}
             exit={{ opacity: 0, transition: { duration: 0.28, ease } }}
@@ -98,14 +99,15 @@ export function AboutModal({ open, onClose, photo, alt, label, bio, photoClassNa
               <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-black/5" />
             </motion.div>
 
-            <motion.p
+            <motion.h2
+              id={headingId}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease, delay: 0.36 }}
-              className="mb-3 text-[11px] uppercase tracking-[0.2em] text-[var(--ink)] sm:text-[12px]"
+              className="mb-3 whitespace-nowrap text-[min(1.75rem,4.3cqi)] font-medium leading-[1.2] tracking-[-0.03em] text-[var(--ink)] @max-[26rem]:whitespace-normal @max-[26rem]:text-[1.3rem] @max-[26rem]:[text-wrap:balance]"
             >
               {label}
-            </motion.p>
+            </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
