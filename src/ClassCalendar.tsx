@@ -72,21 +72,17 @@ const monthDay = (d: Date) =>
 const longDay = (d: Date) =>
   new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' }).format(d)
 
-/** An up-right arrow that slips out toward the corner on hover while a fresh one glides in behind it. Plays once, on hover-in only. */
+/** An up-right arrow that slides out toward the corner on hover while a fresh one glides in behind it. Plays once, on hover-in only. */
 function ArrowSlide() {
-  // The slide only animates on the way in. Leaving resets at once, and since the two arrows are identical
-  // the reset is invisible, so nothing plays backwards.
-  const move =
-    'absolute inset-0 group-hover:transition-transform group-hover:duration-500 group-hover:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none'
   const icon = (
-    <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden className="block">
       <path d="M4.5 11.5l7-7M5.5 4.5h6v6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
   return (
-    <span aria-hidden className="relative block h-4 w-4 shrink-0 overflow-hidden">
-      <span className={`${move} group-hover:translate-x-full group-hover:-translate-y-full`}>{icon}</span>
-      <span className={`${move} -translate-x-full translate-y-full group-hover:translate-x-0 group-hover:translate-y-0`}>{icon}</span>
+    <span aria-hidden className="arrow-slide relative block h-4 w-4 shrink-0 overflow-hidden">
+      <span className="arrow-out">{icon}</span>
+      <span className="arrow-in">{icon}</span>
     </span>
   )
 }
