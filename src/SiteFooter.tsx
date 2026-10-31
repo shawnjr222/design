@@ -29,7 +29,7 @@ function columns(mode: Mode): { title: string; links: FooterLink[] }[] {
   }
   return [
     {
-      title: 'Studios I teach at',
+      title: 'Where I teach',
       links: yogaContent.teaching.map((t) => ({ label: t.label, href: t.href, external: true })),
     },
     {
