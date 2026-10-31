@@ -12,7 +12,10 @@ function columns(mode: Mode): { title: string; links: FooterLink[] }[] {
     return [
       {
         title: 'Featured in',
-        links: aboutReference.featured.slice(0, 4).map((f) => ({ label: f.label, href: f.href, external: true })),
+        links: aboutReference.featured
+          .slice(0, 4)
+          .filter((f) => f.label !== 'Cofolios')
+          .map((f) => ({ label: f.label, href: f.href, external: true })),
       },
       {
         title: 'Portfolio',
