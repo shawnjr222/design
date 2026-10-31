@@ -151,6 +151,8 @@ function App() {
   const [ready, setReady] = useState(reduceMotion)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [headerVisible, setHeaderVisible] = useState(true)
+  // At the very top the header snaps back at once, so a fast scroll up never arrives to a missing toggle
+  const [headerAtTop, setHeaderAtTop] = useState(true)
   const [route, setRoute] = useState<RouteKey | null>(currentRoute)
   const [aboutOpen, setAboutOpen] = useState(false)
   const [aboutOrigin, setAboutOrigin] = useState<DOMRect | null>(null)
@@ -200,12 +202,14 @@ function App() {
     // Keep Design / Yoga toggle always reachable on phones and tablets
     const mq = window.matchMedia('(min-width: 1024px)')
     const onScroll = () => {
+      const y = window.scrollY
+      setHeaderAtTop(y < 24)
+
       if (!mq.matches) {
         setHeaderVisible(true)
         return
       }
 
-      const y = window.scrollY
       const delta = y - lastScrollY.current
 
       if (y < 24) {
@@ -267,7 +271,7 @@ function App() {
             y: headerVisible ? 0 : -100,
             opacity: headerVisible ? 1 : 0,
           }}
-          transition={{ duration: reduceMotion ? 0.01 : 0.35, ease }}
+          transition={{ duration: reduceMotion || headerAtTop ? 0.01 : 0.25, ease }}
           style={{ pointerEvents: headerVisible ? 'auto' : 'none' }}
         >
           <div
