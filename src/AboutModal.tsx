@@ -81,7 +81,7 @@ export function AboutModal({ open, onClose, photo, alt, label, bio, photoClassNa
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--muted)] transition-opacity duration-300 hover:opacity-60"
+              className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--muted)] cursor-pointer"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
                 <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />

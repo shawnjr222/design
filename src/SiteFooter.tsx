@@ -15,8 +15,8 @@ function columns(mode: Mode): { title: string; links: FooterLink[] }[] {
         links: aboutReference.featured.slice(0, 4).map((f) => ({ label: f.label, href: f.href, external: true })),
       },
       {
-        title: 'Request portfolio',
-        links: [{ label: 'Click here', href: portfolioMailto }],
+        title: 'Portfolio',
+        links: [{ label: 'Request', href: portfolioMailto }],
       },
       {
         title: 'Elsewhere',
