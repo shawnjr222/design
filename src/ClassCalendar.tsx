@@ -72,6 +72,25 @@ const monthDay = (d: Date) =>
 const longDay = (d: Date) =>
   new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' }).format(d)
 
+/** An up-right arrow that slips out toward the corner on hover while a fresh one glides in behind it. Plays once, on hover-in only. */
+function ArrowSlide() {
+  // The slide only animates on the way in. Leaving resets at once, and since the two arrows are identical
+  // the reset is invisible, so nothing plays backwards.
+  const move =
+    'absolute inset-0 group-hover:transition-transform group-hover:duration-500 group-hover:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none'
+  const icon = (
+    <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden>
+      <path d="M4.5 11.5l7-7M5.5 4.5h6v6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+  return (
+    <span aria-hidden className="relative block h-4 w-4 shrink-0 overflow-hidden">
+      <span className={`${move} group-hover:translate-x-full group-hover:-translate-y-full`}>{icon}</span>
+      <span className={`${move} -translate-x-full translate-y-full group-hover:translate-x-0 group-hover:translate-y-0`}>{icon}</span>
+    </span>
+  )
+}
+
 function ClassChip({ item, alignRight }: { item: YogaClass; alignRight: boolean }) {
   const tone = toneOf(item.studio)
   return (
@@ -173,7 +192,7 @@ export function ClassCalendar({ classes }: { classes: YogaClass[] }) {
                     href={c.signupUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-4 rounded-2xl px-4 py-3.5 transition-opacity active:opacity-80"
+                    className="group flex items-center gap-4 rounded-2xl px-4 py-3.5 transition-opacity active:opacity-80"
                     style={{ background: toneOf(c.studio).bg, color: toneOf(c.studio).ink }}
                   >
                     <span className="w-14 shrink-0 text-[17px] font-semibold tabular-nums tracking-[-0.02em]">
@@ -185,7 +204,7 @@ export function ClassCalendar({ classes }: { classes: YogaClass[] }) {
                         {formatLocationLabel(c.studio, c.location)}
                       </span>
                     </span>
-                    <span aria-hidden>↗</span>
+                    <ArrowSlide />
                   </a>
                 </li>
               ))}
