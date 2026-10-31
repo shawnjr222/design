@@ -102,7 +102,7 @@ export function AboutModal({ open, onClose, photo, alt, label, bio, photoClassNa
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease, delay: 0.36 }}
-              className="mb-3 text-[11px] uppercase tracking-[0.2em] text-[var(--muted)] sm:text-[12px]"
+              className="mb-3 text-[11px] uppercase tracking-[0.2em] text-[var(--ink)] sm:text-[12px]"
             >
               {label}
             </motion.p>
