@@ -107,7 +107,7 @@ export function YogaPage({ ready, onNavigate }: Props) {
 
       <section id="schedule" className="page-pad-x pt-6 sm:pt-8 pb-12 sm:pb-16">
         <ReadyReveal ready={ready} delay={1.2} y={36} amount={0.04} className="mx-auto max-w-[1120px]">
-          <p className="mb-4 sm:mb-6 text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[var(--muted)]">Upcoming schedule</p>
+          <p className="mb-2.5 sm:mb-3 text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[var(--muted)]">Upcoming schedule</p>
 
           {status === 'loading' && (
             <p className="text-[15px] text-[var(--muted)] py-8 border-t border-[var(--line)]">
