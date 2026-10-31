@@ -150,14 +150,10 @@ function App() {
   const [introDone, setIntroDone] = useState(reduceMotion)
   const [ready, setReady] = useState(reduceMotion)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
-  const [headerVisible, setHeaderVisible] = useState(true)
-  // At the very top the header snaps back at once, so a fast scroll up never arrives to a missing toggle
-  const [headerAtTop, setHeaderAtTop] = useState(true)
   const [route, setRoute] = useState<RouteKey | null>(currentRoute)
   const [aboutOpen, setAboutOpen] = useState(false)
   const [aboutOrigin, setAboutOrigin] = useState<DOMRect | null>(null)
   const mode = modeFor(route)
-  const lastScrollY = useRef(0)
 
   const navigate = (path: string) => {
     const next = routeForPath(path)
@@ -197,47 +193,6 @@ function App() {
   }, [introDone, reduceMotion])
 
   useEffect(() => {
-    if (!introDone) return
-
-    // Keep Design / Yoga toggle always reachable on phones and tablets
-    const mq = window.matchMedia('(min-width: 1024px)')
-    const onScroll = () => {
-      const y = window.scrollY
-      setHeaderAtTop(y < 24)
-
-      if (!mq.matches) {
-        setHeaderVisible(true)
-        return
-      }
-
-      const delta = y - lastScrollY.current
-
-      if (y < 24) {
-        setHeaderVisible(true)
-      } else if (delta > 4) {
-        setHeaderVisible(false)
-      } else if (delta < -4) {
-        setHeaderVisible(true)
-      }
-
-      lastScrollY.current = y
-    }
-
-    const onMq = () => {
-      if (!mq.matches) setHeaderVisible(true)
-      lastScrollY.current = window.scrollY
-    }
-
-    lastScrollY.current = window.scrollY
-    mq.addEventListener('change', onMq)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      mq.removeEventListener('change', onMq)
-      window.removeEventListener('scroll', onScroll)
-    }
-  }, [introDone])
-
-  useEffect(() => {
     if (introDone) {
       document.body.style.overflow = ''
       return
@@ -264,16 +219,8 @@ function App() {
       </AnimatePresence>
 
       <div className="relative z-10 min-h-screen text-[var(--ink)]">
-        <motion.header
-          className="fixed top-0 left-0 right-0 z-50 page-pad-x pt-[env(safe-area-inset-top)]"
-          initial={false}
-          animate={{
-            y: headerVisible ? 0 : -100,
-            opacity: headerVisible ? 1 : 0,
-          }}
-          transition={{ duration: reduceMotion || headerAtTop ? 0.01 : 0.25, ease }}
-          style={{ pointerEvents: headerVisible ? 'auto' : 'none' }}
-        >
+        {/* The header, and the Design / Yoga toggle with it, stays put at every width and scroll speed */}
+        <header className="fixed top-0 left-0 right-0 z-50 page-pad-x pt-[env(safe-area-inset-top)]">
           <div
             aria-hidden
             className="pointer-events-none absolute inset-x-0 top-0 h-[calc(100%+1.25rem)] bg-gradient-to-b from-[var(--bg)] from-60% to-transparent"
@@ -337,7 +284,7 @@ function App() {
               </div>
             </motion.nav>
           </div>
-        </motion.header>
+        </header>
 
         <AnimatePresence
           mode="wait"
