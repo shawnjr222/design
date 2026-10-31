@@ -54,7 +54,7 @@ export function AboutModal({ open, onClose, photo, alt, label, bio, photoClassNa
       {open && (
         <motion.div
           key="about-modal"
-          className="fixed inset-0 z-[90] flex items-end justify-center p-3 sm:items-center sm:p-6"
+          className="fixed inset-0 z-[90] flex items-center justify-center p-3 sm:p-6"
         >
           <motion.button
             type="button"

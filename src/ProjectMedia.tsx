@@ -63,7 +63,9 @@ function useNearViewport(peek = false) {
       const ratio = visibleHeight / Math.max(rect.height, 1)
       const near = ratio >= 0.45 && rect.top < vh * 0.72
 
-      setInView(near)
+      // A peeking first video counts as in view straight away, so it is already playing (and showing a
+      // picture) as it scrolls up, instead of waiting until it is high on the screen and popping in.
+      setInView(peek ? ratio > 0.04 : near)
 
       // Normally media waits until it is mostly on screen; a peeking first image reveals right away.
       const eligible = peek ? ratio > 0.04 : near
@@ -224,6 +226,25 @@ function VideoMedia({
   const cachedSrc = getCachedVideo(src)
   const { ref, revealed, inView } = useNearViewport(peek)
   const videoRef = useRef<HTMLVideoElement>(null)
+
+  // Make sure a first frame is painted even while the video is paused, so the area is never blank
+  // before it plays (some mobile browsers do not draw a paused video until it has been nudged).
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    const paint = () => {
+      if (video.paused && video.currentTime === 0) {
+        try {
+          video.currentTime = 0.01
+        } catch {
+          // ignore
+        }
+      }
+    }
+    video.addEventListener('loadeddata', paint)
+    if (video.readyState >= 2) paint()
+    return () => video.removeEventListener('loadeddata', paint)
+  }, [])
   const startedRef = useRef(false)
   const endedRef = useRef(false)
 
