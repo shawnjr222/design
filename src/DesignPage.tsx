@@ -62,7 +62,7 @@ function ProjectRow({
             <p className="max-w-[34rem] text-[14px] leading-relaxed text-[var(--muted)] sm:text-[15px]">
               {project.description}
             </p>
-            <p className="mt-4 text-[13px] tabular-nums text-[var(--ink-soft)]">{project.years}</p>
+            <p className="mt-4 text-[13px] tabular-nums text-[var(--muted)]">{project.years}</p>
           </div>
           <div className="relative order-1 md:order-2 aspect-[16/10] overflow-hidden rounded-[1rem]">
             <ProjectMedia
