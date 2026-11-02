@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-02T23:23:38.758Z",
+  "fetchedAt": "2026-11-02T23:40:42.068Z",
   "source": "walla",
   "staffId": "153339",
   "classes": [
@@ -8,9 +8,9 @@
       "title": "Vinyasa Flow",
       "start": "2026-11-28T00:30:00.000Z",
       "end": "2026-11-28T01:45:00.000Z",
-      "location": "San Francisco",
+      "location": "Mission",
       "studio": "HAUM",
-      "signupUrl": "https://www.haumstudios.com/schedule"
+      "signupUrl": "https://www.haumstudios.com/schedule?instructorId=153339&date=2026-11-27"
     }
   ]
 }

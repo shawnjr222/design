@@ -25,7 +25,18 @@ const API = 'https://api.hellowalla.com/api/dingo/v1'
 const UUID = '20bbf46e-9f1c-46aa-bcec-431e3b491d7a'
 const STAFF_ID = Number(process.env.HAUM_STAFF_ID || 153339)
 const DAYS = Number(process.env.HAUM_DAYS || 60)
-const SIGNUP_URL = 'https://www.haumstudios.com/schedule'
+/**
+ * Walla's loader forwards the host page's query string into the schedule widget, so
+ * haumstudios.com/schedule?instructorId=…&date=… opens that day, filtered to Shawn, with Book buttons.
+ */
+const SCHEDULE_URL = 'https://www.haumstudios.com/schedule'
+const ymd = (iso) =>
+  new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles' }).format(new Date(iso))
+const signupUrl = (c) => `${SCHEDULE_URL}?instructorId=${STAFF_ID}&date=${ymd(c.start_time)}`
+const place = (c) => {
+  const n = String(c.course?.location?.name || '').trim()
+  return n ? n.charAt(0).toUpperCase() + n.slice(1).toLowerCase() : 'San Francisco'
+}
 
 const tidy = (t) => {
   const s = String(t || 'Class').replace(/\s+/g, ' ').trim()
@@ -65,9 +76,9 @@ const classes = all
     title: tidy(c.display_name || c.name),
     start: new Date(c.start_time).toISOString(),
     end: new Date(c.end_time).toISOString(),
-    location: 'San Francisco',
+    location: place(c),
     studio: 'HAUM',
-    signupUrl: SIGNUP_URL,
+    signupUrl: signupUrl(c),
   }))
   .sort((a, b) => new Date(a.start) - new Date(b.start))
 
