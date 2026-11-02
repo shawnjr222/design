@@ -1,0 +1,50 @@
+# Refresh the HAUM (Walla) schedule every two days. Plain JSON API, no browser needed.
+# The site is redeployed only when the class list changed.
+name: Fetch HAUM schedule
+
+on:
+  schedule:
+    - cron: '45 14 */2 * *' # every other day, ~07:45 PT (offset from the Arise job)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write # lets this job start the Pages deploy (commits made with GITHUB_TOKEN can't trigger it)
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch HAUM
+        run: node scripts/fetch-haum-schedule.mjs
+
+      - name: Commit if classes changed
+        id: commit
+        run: |
+          # Compare only the class list; fetchedAt changes on every run.
+          old=$(git show HEAD:public/data/haum-schedule.json 2>/dev/null | jq -c .classes || echo null)
+          new=$(jq -c .classes public/data/haum-schedule.json)
+          if [ "$old" = "$new" ]; then
+            echo "No schedule changes"
+            git checkout -- public/data/haum-schedule.json 2>/dev/null || true
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/haum-schedule.json
+          git commit -m "chore: refresh HAUM schedule (rolling window)"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy site if classes changed
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-pages.yml --ref main

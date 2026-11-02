@@ -12,7 +12,7 @@ const SESSION_TYPES = [
 
 const TZ = 'America/Los_Angeles'
 
-export type Studio = 'Folk SF' | 'Arise'
+export type Studio = 'Folk SF' | 'Arise' | 'HAUM'
 
 export type YogaClass = {
   id: string
@@ -39,7 +39,7 @@ type MomenceSession = {
   inPersonLocation?: { name?: string } | null
 }
 
-type ArisePayload = {
+type StaticPayload = {
   classes?: Array<{
     id: string
     title: string
@@ -163,13 +163,13 @@ async function fetchFolkClasses(days: number): Promise<YogaClass[]> {
   return classes
 }
 
-async function fetchAriseClasses(days: number): Promise<YogaClass[]> {
+async function fetchStaticClasses(file: string, studio: Studio, days: number): Promise<YogaClass[]> {
   const { now, horizon } = scheduleWindow(days)
 
   try {
-    const res = await fetch('/data/arise-schedule.json', { cache: 'no-store' })
+    const res = await fetch(`/data/${file}`, { cache: 'no-store' })
     if (!res.ok) return []
-    const data = (await res.json()) as ArisePayload
+    const data = (await res.json()) as StaticPayload
     const classes: YogaClass[] = []
 
     for (const item of data.classes ?? []) {
@@ -183,7 +183,7 @@ async function fetchAriseClasses(days: number): Promise<YogaClass[]> {
         start,
         end,
         location: item.location,
-        studio: 'Arise',
+        studio,
         signupUrl: item.signupUrl,
       })
     }
@@ -194,12 +194,13 @@ async function fetchAriseClasses(days: number): Promise<YogaClass[]> {
 }
 
 export async function fetchUpcomingClasses(days = 30): Promise<YogaClass[]> {
-  const [folk, arise] = await Promise.all([
+  const [folk, arise, haum] = await Promise.all([
     fetchFolkClasses(days),
-    fetchAriseClasses(days),
+    fetchStaticClasses('arise-schedule.json', 'Arise', days),
+    fetchStaticClasses('haum-schedule.json', 'HAUM', days),
   ])
 
-  const classes = [...folk, ...arise]
+  const classes = [...folk, ...arise, ...haum]
   classes.sort((a, b) => a.start.getTime() - b.start.getTime())
   return classes
 }

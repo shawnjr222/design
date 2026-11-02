@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "fetch:arise": "node scripts/fetch-arise-schedule.mjs",
+    "fetch:haum": "node scripts/fetch-haum-schedule.mjs",
     "seo:og": "node scripts/make-og.mjs"
   },
   "dependencies": {
