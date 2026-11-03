@@ -8,7 +8,7 @@ export const yogaContent = {
   ],
   teachers: [
     { label: 'Martin Scott', href: 'https://www.martinyoga.com' },
-    { label: 'Europa Grace', href: 'https://youropeah.wixsite.com/europagrace' },
+    { label: 'Ro Grace', href: 'https://youropeah.wixsite.com/europagrace' },
   ],
   instagram: 'https://www.instagram.com/shawnjr.yoga',
   about: {
