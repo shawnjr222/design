@@ -43,14 +43,6 @@ function columns(mode: Mode): { title: string; links: FooterLink[] }[] {
   ]
 }
 
-function Arrow() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden className="inline-block">
-      <path d="M2 3v3.5h7M6.5 4l2.8 2.5L6.5 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
 export function SiteFooter({
   mode,
   onNavigate,
@@ -76,7 +68,6 @@ export function SiteFooter({
             >
               <p className={`mb-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-[var(--muted)] sm:text-[11px] sm:tracking-[0.2em]`}>
                 {col.title}
-                <Arrow />
               </p>
               <ul className="flex flex-col gap-2">
                 {col.links.map((link) => (
