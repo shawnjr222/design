@@ -122,7 +122,7 @@ export function DesignPage({ ready, hoveredId, onHover, onNavigate }: Props) {
               transition={{ duration: 1.05, delay: 0.72, ease }}
               className="text-[clamp(1rem,2.8vw,1.2rem)] leading-[1.55] text-[var(--muted)]"
             >
-              Product designer with 8+ years of experience. Currently leading design at{' '}
+              Currently leading design at{' '}
               <a
                 href="https://www.gradientsports.com"
                 target="_blank"
