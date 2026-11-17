@@ -33,7 +33,7 @@ function columns(mode: Mode): { title: string; links: FooterLink[] }[] {
       links: yogaContent.teaching.map((t) => ({ label: t.label, href: t.href, external: true })),
     },
     {
-      title: 'My teachers',
+      title: 'Guided by',
       links: yogaContent.teachers.map((t) => ({ label: t.label, href: t.href, external: true })),
     },
     {
