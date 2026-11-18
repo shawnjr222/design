@@ -39,7 +39,7 @@ export function YogaPage({ ready, onNavigate }: Props) {
 
     void load()
 
-    // If the tab sits overnight, refresh for the new calendar day's 30-day window.
+    // Coming back to a tab that sat open pulls the schedule again (anything older than a minute is refetched).
     const onVisible = () => {
       if (document.visibilityState !== 'visible') return
       void load()

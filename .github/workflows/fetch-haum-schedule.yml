@@ -1,10 +1,10 @@
-# Refresh the HAUM (Walla) schedule every two days. Plain JSON API, no browser needed.
+# Refresh the HAUM (Walla) schedule every 30 minutes. Walla sends no CORS headers, so a browser can't read it directly; this job is what keeps the site current. Plain JSON API, no browser needed.
 # The site is redeployed only when the class list changed.
 name: Fetch HAUM schedule
 
 on:
   schedule:
-    - cron: '45 14 */2 * *' # every other day, ~07:45 PT (offset from the Arise job)
+    - cron: '*/30 * * * *' # every 30 minutes (GitHub may start scheduled runs late)
   workflow_dispatch:
 
 permissions:

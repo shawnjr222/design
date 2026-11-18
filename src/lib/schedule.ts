@@ -167,7 +167,8 @@ async function fetchStaticClasses(file: string, studio: Studio, days: number): P
   const { now, horizon } = scheduleWindow(days)
 
   try {
-    const res = await fetch(`/data/${file}`, { cache: 'no-store' })
+    // `t` makes every load a new URL, so neither the browser nor the host's CDN can hand back an older copy
+    const res = await fetch(`/data/${file}?t=${Date.now()}`, { cache: 'no-store' })
     if (!res.ok) return []
     const data = (await res.json()) as StaticPayload
     const classes: YogaClass[] = []
@@ -205,19 +206,26 @@ export async function fetchUpcomingClasses(days = 30): Promise<YogaClass[]> {
   return classes
 }
 
-/** Day-keyed warm so each calendar day is a fresh rolling 30-day pull. */
+/**
+ * One shared pull per page load, so the intro and the Yoga page never fetch twice back to back.
+ * Anything older than `maxAgeMs` (or from an earlier calendar day) is pulled again, so every
+ * load of the page, every visit to Yoga, and every return to a tab that sat open gets a fresh schedule.
+ */
 let warmDay: string | null = null
+let warmAt = 0
 let warmPromise: Promise<YogaClass[]> | null = null
 
-export function warmUpcomingClasses(days = 30): Promise<YogaClass[]> {
+export function warmUpcomingClasses(days = 30, maxAgeMs = 60_000): Promise<YogaClass[]> {
   const day = scheduleDayKey()
-  if (!warmPromise || warmDay !== day) {
+  const fresh = warmPromise && warmDay === day && Date.now() - warmAt < maxAgeMs
+  if (!fresh) {
     warmDay = day
+    warmAt = Date.now()
     warmPromise = fetchUpcomingClasses(days).catch((err) => {
       warmPromise = null
       warmDay = null
       throw err
     })
   }
-  return warmPromise
+  return warmPromise as Promise<YogaClass[]>
 }
