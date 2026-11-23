@@ -43,7 +43,7 @@ export const projects: Project[] = [
     id: 4,
     title: 'Coping with Capitalism',
     role: 'Curator',
-    years: '2023–2025',
+    years: '2023–2025 & 2027–',
     description:
       'Built a community publication while leading web and branding work that made self and collective care more accessible.',
     url: 'https://www.copingwithcapitalism.com',
