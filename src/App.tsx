@@ -190,12 +190,6 @@ function App() {
     return () => window.removeEventListener('popstate', onPop)
   }, [])
 
-  // A faint colour behind the page follows where you are (and which side of About you are reading).
-  useEffect(() => {
-    const tone = route === '/yoga/' ? 'yoga' : route === '/about/' ? aboutContext : 'design'
-    document.documentElement.dataset.tone = tone
-  }, [route, aboutContext])
-
   // Keep title, description, canonical and structured data in step with the URL.
   useEffect(() => {
     if (route) applySeo(route)
