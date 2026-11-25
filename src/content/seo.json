@@ -40,6 +40,12 @@
       "description": "Yoga teacher (500 RYT) based in San Francisco, CA",
       "type": "website",
       "label": "Yoga"
+    },
+    "/about/": {
+      "title": "Shawn Jr • About",
+      "description": "About Shawn Jr: product designer and yoga teacher based in San Francisco, CA",
+      "type": "profile",
+      "label": "About"
     }
   }
 }

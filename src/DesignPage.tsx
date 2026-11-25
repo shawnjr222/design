@@ -96,7 +96,7 @@ export function DesignPage({ ready, hoveredId, onHover, onNavigate }: Props) {
 
   return (
     <>
-      <section className="relative min-h-[68svh] flex flex-col justify-end page-pad-x pt-28 sm:pt-32 pb-10 sm:pb-14">
+      <section className="relative min-h-[46svh] sm:min-h-[56svh] lg:min-h-[62svh] flex flex-col justify-end page-pad-x pt-28 sm:pt-32 pb-10 sm:pb-14">
         <div className="mx-auto w-full max-w-[1120px]">
           <motion.p
             initial={{ opacity: 0, y: 36 }}
