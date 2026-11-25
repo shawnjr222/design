@@ -46,17 +46,21 @@ function columns(mode: Mode): { title: string; links: FooterLink[] }[] {
 export function SiteFooter({
   mode,
   onNavigate,
+  minimal = false,
 }: {
   mode: Mode
   onNavigate?: (path: string) => void
+  /** Just the line and the copyright row, with none of the link columns. */
+  minimal?: boolean
 }) {
-  const cols = columns(mode)
+  const cols = minimal ? [] : columns(mode)
   return (
     <footer className="page-pad-x pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-      <div className="mx-auto max-w-[1120px] border-t border-[var(--line)] pt-10 sm:pt-12">
+      <div className={`mx-auto max-w-[1120px] border-t border-[var(--line)] ${minimal ? 'pt-5 sm:pt-6' : 'pt-10 sm:pt-12'}`}>
         {/* The three columns are spread with equal space between them, so the middle one is always centred
             between the first and the last. The last column and "Made with" share one fixed width,
             both flush right, so their left edges line up at every screen size. */}
+        {!minimal && (
         <div className="flex items-start justify-between gap-x-4">
           {cols.map((col, i) => {
             const last = i === cols.length - 1
@@ -94,8 +98,9 @@ export function SiteFooter({
             )
           })}
         </div>
+        )}
 
-        <div className="mt-14 flex items-start justify-between gap-x-4 text-[13px] text-[var(--muted)] sm:mt-20">
+        <div className={`flex items-start justify-between gap-x-4 text-[13px] text-[var(--muted)] ${minimal ? '' : 'mt-14 sm:mt-20'}`}>
           <p className="whitespace-nowrap">© 2026 Shawn Jr</p>
           <p className="w-28 shrink-0 whitespace-nowrap">Made with 🤎</p>
         </div>
